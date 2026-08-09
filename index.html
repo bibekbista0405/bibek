@@ -495,15 +495,16 @@ footer .totop{display:inline-block;margin-top:16px;font-size:13px;font-weight:70
 
 /* ---- transition ripple, launches from the trigger button ---- */
 #hireRipple{
-  position:fixed;left:0;top:0;width:1px;height:1px;border-radius:50%;
+  position:fixed;left:0;top:0;width:1px;height:1px;
   background:var(--room-bg,#1B1712);z-index:9500;pointer-events:none;
   transform:translate(-50%,-50%);opacity:0;
+  border-radius:63% 37% 54% 46% / 45% 51% 49% 55%;
 }
 #hireRipple.launch{
-  animation:hireRippleGrow .8s cubic-bezier(.3,.85,.35,1) forwards;
+  animation:hireRippleGrow .72s cubic-bezier(.3,.85,.35,1) forwards, hireRippleMorph .72s ease forwards;
 }
 #hireRipple.retract{
-  animation:hireRippleShrink .6s cubic-bezier(.5,0,.75,.2) forwards;
+  animation:hireRippleShrink .58s cubic-bezier(.5,0,.75,.2) forwards, hireRippleMorph .58s ease reverse;
 }
 @keyframes hireRippleGrow{
   0%{width:1px;height:1px;opacity:1;}
@@ -513,8 +514,31 @@ footer .totop{display:inline-block;margin-top:16px;font-size:13px;font-weight:70
   0%{width:340vmax;height:340vmax;opacity:1;}
   100%{width:1px;height:1px;opacity:1;}
 }
+@keyframes hireRippleMorph{
+  0%{border-radius:63% 37% 54% 46% / 45% 51% 49% 55%;}
+  35%{border-radius:41% 59% 38% 62% / 63% 42% 58% 37%;}
+  70%{border-radius:52% 48% 60% 40% / 40% 58% 42% 60%;}
+  100%{border-radius:50%;}
+}
+
+/* ---- signature opening sequence: a hand-drawn line grows from the button,
+   small marks travel along it, then the blob above takes over ---- */
+#hireDrawLayer{
+  position:fixed;inset:0;width:100vw;height:100vh;z-index:9550;pointer-events:none;opacity:0;
+}
+#hireDrawLayer.active{opacity:1;}
+#hireDrawPath{
+  fill:none;stroke:var(--gold);stroke-width:2.5;stroke-linecap:round;
+  filter:drop-shadow(0 0 6px rgba(255,180,67,0.5));
+}
+.hire-spark{
+  position:fixed;left:0;top:0;font-size:15px;line-height:1;opacity:0;
+  transform:translate(-50%,-50%) scale(0.4);pointer-events:none;z-index:9560;
+  filter:drop-shadow(0 2px 6px rgba(0,0,0,0.35));
+}
 @media (prefers-reduced-motion: reduce){
   #hireRipple.launch, #hireRipple.retract{animation:none;}
+  #hireDrawLayer, .hire-spark{display:none;}
 }
 
 /* ---- the room itself ---- */
@@ -592,25 +616,44 @@ footer .totop{display:inline-block;margin-top:16px;font-size:13px;font-weight:70
 }
 .room-doodle-arrow{font-family:'Caveat';font-size:17px;color:var(--room-text-soft);margin-top:10px;display:flex;align-items:center;gap:6px;}
 
+/* ---- depth layers: background (slow) / midground doodles (medium) / foreground (normal) ---- */
+.room-doodle-layer{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0;}
+.room-doodle{position:absolute;font-family:'Caveat';color:var(--room-text-soft);opacity:0.5;will-change:transform;}
+.room-doodle.d1{top:8%;left:6%;font-size:34px;transform:rotate(-8deg);}
+.room-doodle.d2{top:22%;right:9%;font-size:22px;color:var(--sage);opacity:0.6;}
+.room-doodle.d3{bottom:14%;left:10%;font-size:26px;color:var(--sky);transform:rotate(6deg);}
+.room-doodle.d4{top:60%;right:16%;font-size:30px;transform:rotate(4deg);}
+@media (max-width:760px){.room-doodle-layer{display:none;}}
+
+/* hero typography — assembled word by word */
+.room-title .hw{display:inline-block;}
+
 /* choice prompt */
-.room-section{padding:56px 0 0;}
+.room-section{padding:56px 0 0;position:relative;}
 .room-h2{font-family:'Fredoka';font-size:clamp(24px,4vw,34px);color:var(--room-text);text-align:center;}
 .room-h2 small{display:block;font-family:'Plus Jakarta Sans';font-weight:700;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--room-text-soft);margin-bottom:8px;}
 
-.choice-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-top:32px;}
+.choice-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-top:32px;perspective:900px;}
 .choice-card{
   background:var(--room-glass);border:1px solid var(--room-border);border-radius:var(--radius-md);
   padding:22px 16px;text-align:left;color:var(--room-text);cursor:pointer;
-  transition:transform .25s cubic-bezier(.2,.8,.2,1), background .25s ease, border-color .25s ease;
-  position:relative;
+  transition:transform .3s cubic-bezier(.34,1.4,.4,1), background .25s ease, border-color .25s ease, opacity .35s ease, filter .35s ease;
+  position:relative;transform-style:preserve-3d;will-change:transform;
 }
 .choice-card:nth-child(odd){transform:rotate(-1.2deg);}
 .choice-card:nth-child(even){transform:rotate(1.2deg);}
-.choice-card:hover{background:var(--room-glass-2);transform:translateY(-5px) rotate(0deg);border-color:rgba(255,180,67,0.5);}
-.choice-card.chosen{background:rgba(255,180,67,0.14);border-color:var(--gold);transform:translateY(-5px) rotate(0deg);}
+.choice-card:hover{background:var(--room-glass-2);border-color:rgba(255,180,67,0.5);}
+.choice-card.chosen{background:rgba(255,180,67,0.14);border-color:var(--gold);transform:translateY(-5px) rotate(0deg) scale(1.02);}
+.choice-card.dimmed{opacity:0.32;filter:blur(1.5px) saturate(0.6);transform:scale(0.94) rotate(0deg) !important;pointer-events:none;}
 .choice-card .cc-icon{font-size:24px;display:block;margin-bottom:10px;transition:transform .3s cubic-bezier(.34,1.56,.64,1);}
 .choice-card:hover .cc-icon, .choice-card.chosen .cc-icon{transform:scale(1.18) rotate(-6deg);}
 .choice-card .cc-label{font-weight:700;font-size:14px;line-height:1.35;}
+.choice-card .cc-hover{
+  display:block;font-size:12px;font-weight:500;color:var(--room-text-soft);margin-top:8px;line-height:1.4;
+  max-height:0;opacity:0;overflow:hidden;transition:max-height .3s ease, opacity .25s ease .05s;
+}
+.choice-card:hover .cc-hover, .choice-card.chosen .cc-hover{max-height:60px;opacity:1;}
+@media (hover:none){.choice-card .cc-hover{display:none;}}
 
 .room-response{
   max-width:560px;margin:26px auto 0;text-align:center;background:var(--room-glass);
@@ -623,16 +666,40 @@ footer .totop{display:inline-block;margin-top:16px;font-size:13px;font-weight:70
 .room-pillrow{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:22px;}
 .room-pill{font-size:13.5px;font-weight:600;padding:9px 16px;border-radius:100px;background:var(--room-glass);border:1px solid var(--room-border);color:var(--room-text);}
 
-/* why bibek */
+/* why bibek — each tile turns into a tiny visual object when opened */
 .why-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:30px;}
 @media (max-width:700px){.why-grid{grid-template-columns:repeat(3,1fr);}}
 @media (max-width:460px){.why-grid{grid-template-columns:repeat(2,1fr);}}
 .why-tile{
   background:var(--room-glass);border:1px solid var(--room-border);border-radius:var(--radius-md);
-  padding:18px 10px;text-align:center;cursor:pointer;transition:transform .2s ease, background .2s ease;
+  padding:18px 10px 14px;text-align:center;cursor:pointer;transition:transform .25s cubic-bezier(.34,1.4,.4,1), background .25s ease;
 }
 .why-tile:hover, .why-tile.open{background:var(--room-glass-2);transform:translateY(-4px);}
+.why-tile .wt-icon{display:block;height:22px;margin:0 auto 8px;position:relative;}
 .why-tile .wt-label{font-family:'Fredoka';font-size:14px;color:var(--room-text);}
+/* BUILD: blocks assemble */
+.wt-icon .wi-block{position:absolute;width:7px;height:7px;background:var(--coral);border-radius:2px;bottom:0;transition:transform .4s cubic-bezier(.34,1.56,.64,1);}
+.wt-icon .wi-block:nth-child(1){left:calc(50% - 11px);}
+.wt-icon .wi-block:nth-child(2){left:calc(50% - 3px);}
+.wt-icon .wi-block:nth-child(3){left:calc(50% + 5px);}
+.why-tile[data-why="build"] .wi-block{transform:translateY(14px);opacity:0.5;}
+.why-tile[data-why="build"].open .wi-block, .why-tile[data-why="build"]:hover .wi-block{transform:translateY(0);opacity:1;}
+.why-tile[data-why="build"].open .wi-block:nth-child(2), .why-tile[data-why="build"]:hover .wi-block:nth-child(2){transition-delay:.06s;}
+.why-tile[data-why="build"].open .wi-block:nth-child(3), .why-tile[data-why="build"]:hover .wi-block:nth-child(3){transition-delay:.12s;}
+/* LEARN: notebook opens */
+.wt-icon .wi-book{position:absolute;left:50%;bottom:0;width:20px;height:15px;transform:translateX(-50%) rotateX(0deg);transform-origin:bottom center;border-top:2px solid var(--sky);border-radius:3px 3px 0 0;transition:transform .4s ease;}
+.why-tile[data-why="learn"].open .wi-book, .why-tile[data-why="learn"]:hover .wi-book{transform:translateX(-50%) rotateX(35deg);}
+/* SOLVE: puzzle connects */
+.wt-icon .wi-a, .wt-icon .wi-b{position:absolute;bottom:2px;width:9px;height:9px;border-radius:2px;background:var(--sage);transition:transform .35s cubic-bezier(.34,1.56,.64,1);}
+.wt-icon .wi-a{left:calc(50% - 9px);}
+.wt-icon .wi-b{left:calc(50% + 1px);opacity:0.55;}
+.why-tile[data-why="solve"].open .wi-b, .why-tile[data-why="solve"]:hover .wi-b{transform:translateX(-4px);opacity:1;}
+/* CREATE: pencil draws a line */
+.wt-icon .wi-line{position:absolute;left:50%;bottom:3px;width:0;height:2px;background:var(--gold);transform:translateX(-50%);transition:width .4s ease;}
+.why-tile[data-why="create"].open .wi-line, .why-tile[data-why="create"]:hover .wi-line{width:22px;}
+/* ADAPT: shape morphs */
+.wt-icon .wi-shape{position:absolute;left:50%;bottom:1px;width:14px;height:14px;transform:translateX(-50%);background:var(--plum);border-radius:50%;transition:border-radius .4s ease, transform .4s ease;}
+.why-tile[data-why="adapt"].open .wi-shape, .why-tile[data-why="adapt"]:hover .wi-shape{border-radius:20% 60% 20% 60%;transform:translateX(-50%) rotate(45deg);}
 .why-panel{
   grid-column:1/-1;background:var(--room-glass);border:1px dashed var(--room-border);
   border-radius:var(--radius-md);padding:18px 20px;font-size:14.5px;color:var(--room-text-soft);
@@ -640,20 +707,70 @@ footer .totop{display:inline-block;margin-top:16px;font-size:13px;font-weight:70
 }
 .why-panel.show{display:block;}
 
-/* project proof */
+/* project proof — each card is a tiny living artifact */
 .proof-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:30px;}
 @media (max-width:600px){.proof-grid{grid-template-columns:1fr;}}
 .proof-card{
   background:var(--room-glass);border:1px solid var(--room-border);border-radius:var(--radius-md);
-  padding:20px;cursor:pointer;transition:transform .25s ease, border-color .25s ease;
+  padding:16px 20px 20px;cursor:pointer;transition:transform .3s cubic-bezier(.34,1.4,.4,1), border-color .25s ease, opacity .3s ease, filter .3s ease;
+  overflow:hidden;
 }
 .proof-card:hover, .proof-card.open{transform:translateY(-4px);border-color:rgba(124,174,141,0.5);}
 .proof-card h4{font-family:'Fredoka';font-size:18px;color:var(--room-text);}
 .proof-card .pc-tagline{font-size:13px;color:var(--room-text-soft);margin-top:4px;}
 .proof-detail{display:none;margin-top:12px;padding-top:12px;border-top:1px dashed var(--room-border);font-size:13.5px;color:var(--room-text-soft);}
 .proof-card.open .proof-detail{display:block;}
-.proof-detail .pd-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
-.proof-detail .tag{font-size:11px;font-weight:600;background:var(--room-glass-2);padding:4px 9px;border-radius:100px;color:var(--room-text);}
+
+/* miniature illustration header per project */
+.pc-mini{height:34px;margin-bottom:12px;position:relative;}
+/* DASH — mini browser: tabs shift on hover */
+.pc-mini.mini-dash{display:flex;flex-direction:column;gap:3px;}
+.pc-mini.mini-dash .mb-bar{display:flex;gap:4px;align-items:center;}
+.pc-mini.mini-dash .mb-dot{width:5px;height:5px;border-radius:50%;background:var(--room-text-soft);opacity:0.5;}
+.pc-mini.mini-dash .mb-tab{height:8px;width:26px;border-radius:3px 3px 0 0;background:var(--room-glass-2);transition:transform .3s cubic-bezier(.34,1.56,.64,1);}
+.pc-mini.mini-dash .mb-tab:nth-child(2){width:20px;opacity:0.7;}
+.proof-card:hover .pc-mini.mini-dash .mb-tab:nth-child(1){transform:translateX(-3px);}
+.proof-card:hover .pc-mini.mini-dash .mb-tab:nth-child(2){transform:translateX(3px);}
+.pc-mini.mini-dash .mb-address{height:9px;border-radius:4px;background:var(--room-glass-2);margin-top:2px;}
+/* INK — social: notification pulses on hover */
+.pc-mini.mini-ink{display:flex;align-items:center;gap:6px;}
+.pc-mini.mini-ink .mi-avatar{width:22px;height:22px;border-radius:50%;background:var(--room-glass-2);position:relative;flex-shrink:0;}
+.pc-mini.mini-ink .mi-dot{position:absolute;top:-2px;right:-2px;width:8px;height:8px;border-radius:50%;background:var(--coral);transform:scale(0);transition:transform .3s cubic-bezier(.34,1.56,.64,1);}
+.proof-card:hover .pc-mini.mini-ink .mi-dot{transform:scale(1);}
+.pc-mini.mini-ink .mi-lines{flex:1;display:flex;flex-direction:column;gap:4px;}
+.pc-mini.mini-ink .mi-line{height:5px;border-radius:3px;background:var(--room-glass-2);}
+.pc-mini.mini-ink .mi-line:nth-child(2){width:60%;}
+/* LinkUp — phone: message slides in on hover */
+.pc-mini.mini-linkup{display:flex;justify-content:flex-start;}
+.pc-mini.mini-linkup .ml-phone{width:20px;height:34px;border-radius:5px;border:2px solid var(--room-glass-2);position:relative;overflow:hidden;}
+.pc-mini.mini-linkup .ml-msg{position:absolute;left:-70%;top:6px;width:70%;height:6px;border-radius:3px;background:var(--sky);transition:left .35s cubic-bezier(.3,.7,.3,1);}
+.proof-card:hover .pc-mini.mini-linkup .ml-msg{left:15%;}
+/* AI Assistant — dots "typing" on hover */
+.pc-mini.mini-ai{display:flex;align-items:center;gap:5px;height:34px;}
+.pc-mini.mini-ai .ma-dot{width:6px;height:6px;border-radius:50%;background:var(--plum);opacity:0.4;}
+.proof-card:hover .pc-mini.mini-ai .ma-dot{animation:maBounce 1s ease-in-out infinite;}
+.proof-card:hover .pc-mini.mini-ai .ma-dot:nth-child(2){animation-delay:.12s;}
+.proof-card:hover .pc-mini.mini-ai .ma-dot:nth-child(3){animation-delay:.24s;}
+@keyframes maBounce{0%,100%{transform:translateY(0);opacity:0.4;}50%{transform:translateY(-5px);opacity:1;}}
+
+/* tech-stack flow, replaces flat tag pills */
+.pd-flow{display:flex;flex-wrap:wrap;align-items:center;gap:0;margin-top:12px;}
+.pd-flow .tag{font-size:11px;font-weight:600;background:var(--room-glass-2);padding:4px 9px;border-radius:100px;color:var(--room-text);white-space:nowrap;}
+.pd-flow .pd-connector{flex:0 0 16px;height:2px;background:var(--room-border);position:relative;margin:0 2px;overflow:visible;}
+.pd-flow .pd-connector::after{
+  content:"";position:absolute;top:50%;left:0;width:5px;height:5px;border-radius:50%;
+  background:var(--gold);transform:translate(-50%,-50%);opacity:0;
+}
+.proof-card.open .pd-flow .pd-connector::after{animation:pdTravel 1.3s ease-in-out 1;}
+@keyframes pdTravel{
+  0%{left:0;opacity:0;}
+  10%{opacity:1;}
+  90%{opacity:1;}
+  100%{left:100%;opacity:0;}
+}
+@media (prefers-reduced-motion: reduce){
+  .proof-card.open .pd-flow .pd-connector::after{animation:none;}
+}
 
 /* resume + availability */
 .room-twocol{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:30px;}
@@ -727,12 +844,19 @@ footer .totop{display:inline-block;margin-top:16px;font-size:13px;font-weight:70
 @media (prefers-reduced-motion: reduce){
   .room-plane.fly, .room-plane.wobble{animation:none;opacity:0;}
 }
+.room-plane-trail{
+  position:fixed;width:5px;height:5px;border-radius:50%;background:var(--gold);
+  z-index:9590;pointer-events:none;opacity:0.7;transform:translate(-50%,-50%);
+  animation:trailFade .6s ease forwards;
+}
+@keyframes trailFade{0%{opacity:0.7;transform:translate(-50%,-50%) scale(1);}100%{opacity:0;transform:translate(-50%,-50%) scale(0.2);}}
+@media (prefers-reduced-motion: reduce){.room-plane-trail{display:none;}}
 
 .room-status-view{display:none;text-align:center;max-width:480px;margin:20px auto 0;padding:30px 10px;}
 .room-status-view.show{display:block;}
 .room-status-view h3{font-family:'Fredoka';font-size:28px;color:var(--room-text);}
 .room-status-view p{color:var(--room-text-soft);margin-top:12px;font-size:14.5px;}
-.room-status-view .room-btn{margin-top:22px;}
+.room-status-view .room-btn-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:22px;}
 
 .room-doodle-note{
   font-family:'Caveat';font-size:16px;color:var(--room-text-soft);text-align:center;
@@ -742,6 +866,11 @@ footer .totop{display:inline-block;margin-top:16px;font-size:13px;font-weight:70
 @media (max-width:600px){
   .choice-grid{grid-template-columns:repeat(2,1fr);}
   .why-grid{grid-template-columns:repeat(2,1fr);}
+}
+@media (hover:none), (pointer:coarse){
+  .choice-card, .proof-card{transform:none !important;}
+  .choice-card:nth-child(odd), .choice-card:nth-child(even){transform:none;}
+  .portrait-card{transform:none !important;}
 }
 </style>
 </head>
@@ -1236,6 +1365,9 @@ footer .totop{display:inline-block;margin-top:16px;font-size:13px;font-weight:70
 </main>
 
 <div id="hireRipple" aria-hidden="true"></div>
+<svg id="hireDrawLayer" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+  <path id="hireDrawPath" d="" />
+</svg>
 <div class="room-plane" id="roomPlane" aria-hidden="true">✈️</div>
 
 <div id="hiringRoom" role="dialog" aria-modal="true" aria-labelledby="hiringRoomTitle" aria-hidden="true">
@@ -1246,17 +1378,24 @@ footer .totop{display:inline-block;margin-top:16px;font-size:13px;font-weight:70
     <span class="room-status-chip"><span class="pulse" aria-hidden="true"></span> Open to opportunities</span>
   </div>
 
+  <div class="room-doodle-layer" aria-hidden="true" id="roomDoodleLayer">
+    <span class="room-doodle d1" data-depth="0.35">✦</span>
+    <span class="room-doodle d2" data-depth="0.5">↝</span>
+    <span class="room-doodle d3" data-depth="0.28">◌</span>
+    <span class="room-doodle d4" data-depth="0.45">✎</span>
+  </div>
+
   <div class="room-wrap">
 
     <div class="room-hero">
       <div>
         <p class="room-eyebrow hand">Welcome to</p>
-        <h1 class="room-title" id="hiringRoomTitle">HIRE <span class="accent">BIBEK</span>.</h1>
+        <h1 class="room-title" id="hiringRoomTitle"><span class="hw">HIRE</span> <span class="hw accent">BIBEK</span><span class="hw">.</span></h1>
         <p class="room-sub" id="roomHeroSub">A creative recruitment desk, not a contact form. Pick what brings you here.</p>
         <span class="room-sticky hand">Currently building something.</span>
         <p class="room-doodle-arrow hand">↳ psst, the projects are worth a look</p>
       </div>
-      <div class="portrait-card">
+      <div class="portrait-card" data-depth="0.8">
         <div class="pc-tape" aria-hidden="true"></div>
         <img id="roomPortrait" alt="Photo of Bibek Bista, smiling">
         <p class="pc-name">Bibek Bista</p>
@@ -1267,11 +1406,11 @@ footer .totop{display:inline-block;margin-top:16px;font-size:13px;font-weight:70
     <div class="room-section">
       <h2 class="room-h2"><small>So...</small>What are we building?</h2>
       <div class="choice-grid" id="choiceGrid" role="group" aria-label="What brings you here">
-        <button type="button" class="choice-card" data-choice="role"><span class="cc-icon">📄</span><span class="cc-label">I'm hiring for a role</span></button>
-        <button type="button" class="choice-card" data-choice="internship"><span class="cc-icon">🗂️</span><span class="cc-label">I have an internship</span></button>
-        <button type="button" class="choice-card" data-choice="project"><span class="cc-icon">🪟</span><span class="cc-label">I have a project</span></button>
-        <button type="button" class="choice-card" data-choice="collab"><span class="cc-icon">🔗</span><span class="cc-label">I want to collaborate</span></button>
-        <button type="button" class="choice-card" data-choice="talk"><span class="cc-icon">💬</span><span class="cc-label">I just want to talk</span></button>
+        <button type="button" class="choice-card" data-choice="role" data-cursor-label="Open"><span class="cc-icon">📄</span><span class="cc-label">I'm hiring for a role</span><span class="cc-hover">A resume and a role brief — let's see if it's a fit.</span></button>
+        <button type="button" class="choice-card" data-choice="internship" data-cursor-label="Open"><span class="cc-icon">🗂️</span><span class="cc-label">I have an internship</span><span class="cc-hover">Let's talk about where I can learn, contribute and grow.</span></button>
+        <button type="button" class="choice-card" data-choice="project" data-cursor-label="Open"><span class="cc-icon">🪟</span><span class="cc-label">I have a project</span><span class="cc-hover">Share the brief — freelance and one-off builds welcome.</span></button>
+        <button type="button" class="choice-card" data-choice="collab" data-cursor-label="Open"><span class="cc-icon">🔗</span><span class="cc-label">I want to collaborate</span><span class="cc-hover">Two ideas, one build. What are you working on?</span></button>
+        <button type="button" class="choice-card" data-choice="talk" data-cursor-label="Open"><span class="cc-icon">💬</span><span class="cc-label">I just want to talk</span><span class="cc-hover">No agenda needed — just say hi.</span></button>
       </div>
       <div class="room-response" id="roomResponse"></div>
     </div>
@@ -1292,11 +1431,11 @@ footer .totop{display:inline-block;margin-top:16px;font-size:13px;font-weight:70
     <div class="room-section">
       <h2 class="room-h2"><small>Why Bibek?</small>Tap one to find out</h2>
       <div class="why-grid" id="whyGrid">
-        <div class="why-tile" data-why="build"><span class="wt-label">BUILD</span></div>
-        <div class="why-tile" data-why="learn"><span class="wt-label">LEARN</span></div>
-        <div class="why-tile" data-why="solve"><span class="wt-label">SOLVE</span></div>
-        <div class="why-tile" data-why="create"><span class="wt-label">CREATE</span></div>
-        <div class="why-tile" data-why="adapt"><span class="wt-label">ADAPT</span></div>
+        <div class="why-tile" data-why="build"><span class="wt-icon" aria-hidden="true"><span class="wi-block"></span><span class="wi-block"></span><span class="wi-block"></span></span><span class="wt-label">BUILD</span></div>
+        <div class="why-tile" data-why="learn"><span class="wt-icon" aria-hidden="true"><span class="wi-book"></span></span><span class="wt-label">LEARN</span></div>
+        <div class="why-tile" data-why="solve"><span class="wt-icon" aria-hidden="true"><span class="wi-a"></span><span class="wi-b"></span></span><span class="wt-label">SOLVE</span></div>
+        <div class="why-tile" data-why="create"><span class="wt-icon" aria-hidden="true"><span class="wi-line"></span></span><span class="wt-label">CREATE</span></div>
+        <div class="why-tile" data-why="adapt"><span class="wt-icon" aria-hidden="true"><span class="wi-shape"></span></span><span class="wt-label">ADAPT</span></div>
         <div class="why-panel" id="whyPanel"></div>
       </div>
     </div>
@@ -1304,21 +1443,60 @@ footer .totop{display:inline-block;margin-top:16px;font-size:13px;font-weight:70
     <div class="room-section">
       <h2 class="room-h2"><small>Don't take my word for it</small>A few things I've actually built</h2>
       <div class="proof-grid">
-        <button type="button" class="proof-card" data-proof="dash">
+        <button type="button" class="proof-card" data-proof="dash" data-cursor-label="View">
+          <div class="pc-mini mini-dash" aria-hidden="true">
+            <div class="mb-bar"><span class="mb-dot"></span><span class="mb-dot"></span><span class="mb-dot"></span></div>
+            <div class="mb-bar"><span class="mb-tab"></span><span class="mb-tab"></span></div>
+            <div class="mb-address"></div>
+          </div>
           <h4>DASH</h4><p class="pc-tagline">Privacy-first desktop browser</p>
-          <div class="proof-detail">A desktop browser built to put user control front and center — renderer → Electron → IPC → services → SQLite.<div class="pd-tags"><span class="tag">Electron</span><span class="tag">React</span><span class="tag">TypeScript</span><span class="tag">SQLite</span></div></div>
+          <div class="proof-detail">A desktop browser built to put user control front and center — renderer → Electron → IPC → services → SQLite.
+            <div class="pd-flow">
+              <span class="tag">Electron</span><span class="pd-connector"></span>
+              <span class="tag">React</span><span class="pd-connector"></span>
+              <span class="tag">TypeScript</span><span class="pd-connector"></span>
+              <span class="tag">SQLite</span>
+            </div>
+          </div>
         </button>
-        <button type="button" class="proof-card" data-proof="ink">
+        <button type="button" class="proof-card" data-proof="ink" data-cursor-label="View">
+          <div class="pc-mini mini-ink" aria-hidden="true">
+            <div class="mi-avatar"><span class="mi-dot"></span></div>
+            <div class="mi-lines"><span class="mi-line"></span><span class="mi-line"></span></div>
+          </div>
           <h4>INK</h4><p class="pc-tagline">Social platform</p>
-          <div class="proof-detail">"I Need To Know" — a social platform with registration, login, username verification, and a full frontend/backend split.<div class="pd-tags"><span class="tag">React</span><span class="tag">Node.js</span><span class="tag">Firebase</span></div></div>
+          <div class="proof-detail">"I Need To Know" — a social platform with registration, login, username verification, and a full frontend/backend split.
+            <div class="pd-flow">
+              <span class="tag">React</span><span class="pd-connector"></span>
+              <span class="tag">Node.js</span><span class="pd-connector"></span>
+              <span class="tag">Firebase</span>
+            </div>
+          </div>
         </button>
-        <button type="button" class="proof-card" data-proof="linkup">
+        <button type="button" class="proof-card" data-proof="linkup" data-cursor-label="View">
+          <div class="pc-mini mini-linkup" aria-hidden="true">
+            <div class="ml-phone"><span class="ml-msg"></span></div>
+          </div>
           <h4>LinkUp</h4><p class="pc-tagline">Communication / chat platform</p>
-          <div class="proof-detail">What if a website felt like your phone? Friend requests, chat, notifications, and calling — prototype-level features labeled clearly where still in progress.<div class="pd-tags"><span class="tag">Realtime</span><span class="tag">Auth</span><span class="tag">Chat</span></div></div>
+          <div class="proof-detail">What if a website felt like your phone? Friend requests, chat, notifications, and calling — prototype-level features labeled clearly where still in progress.
+            <div class="pd-flow">
+              <span class="tag">Realtime</span><span class="pd-connector"></span>
+              <span class="tag">Auth</span><span class="pd-connector"></span>
+              <span class="tag">Chat</span>
+            </div>
+          </div>
         </button>
-        <button type="button" class="proof-card" data-proof="ai">
+        <button type="button" class="proof-card" data-proof="ai" data-cursor-label="View">
+          <div class="pc-mini mini-ai" aria-hidden="true">
+            <span class="ma-dot"></span><span class="ma-dot"></span><span class="ma-dot"></span>
+          </div>
           <h4>AI Assistant</h4><p class="pc-tagline">AI conversation / interface exploration</p>
-          <div class="proof-detail">An experimental concept exploring natural conversation, voice interaction and expressive interfaces. Curiosity-driven, not a finished product.<div class="pd-tags"><span class="tag">AI/UX</span><span class="tag">Prototype</span></div></div>
+          <div class="proof-detail">An experimental concept exploring natural conversation, voice interaction and expressive interfaces. Curiosity-driven, not a finished product.
+            <div class="pd-flow">
+              <span class="tag">AI/UX</span><span class="pd-connector"></span>
+              <span class="tag">Prototype</span>
+            </div>
+          </div>
         </button>
       </div>
     </div>
@@ -1374,19 +1552,25 @@ footer .totop{display:inline-block;margin-top:16px;font-size:13px;font-weight:70
           <textarea id="rf-message" name="message" placeholder="Tell me what you're building, hiring for, or thinking about..." required></textarea>
           <span class="pencil-doodle" id="pencilDoodle" aria-hidden="true">✏️</span>
         </div>
-        <button type="submit" id="roomSendBtn">Send it <span class="send-arrow">→</span></button>
+        <button type="submit" id="roomSendBtn" data-cursor-label="Let's talk">Send it <span class="send-arrow">→</span></button>
       </form>
 
       <div class="room-status-view" id="roomSuccess">
-        <h3>Message delivered.</h3>
-        <p>Thanks for reaching out. I'll get back to you as soon as possible.</p>
-        <button type="button" class="room-btn primary" id="roomBackFromSuccess">← Back to portfolio</button>
+        <h3>Message delivered ✦</h3>
+        <p id="roomSuccessNote">Thanks for reaching out. I'll get back to you as soon as possible.</p>
+        <div class="room-btn-row">
+          <button type="button" class="room-btn primary" id="roomBackFromSuccess">← Back to portfolio</button>
+          <button type="button" class="room-btn" id="roomSendAnotherBtn">Send another</button>
+        </div>
       </div>
 
       <div class="room-status-view" id="roomError">
-        <h3>That didn't go through.</h3>
-        <p>Something interrupted the message. No harm done — try again whenever you're ready.</p>
-        <button type="button" class="room-btn primary" id="roomRetryBtn">Try again</button>
+        <h3>The message got lost.</h3>
+        <p>Looks like there's no email app to hand it to. No harm done — try again, or email me directly.</p>
+        <div class="room-btn-row">
+          <button type="button" class="room-btn primary" id="roomRetryBtn">Try again</button>
+          <a class="room-btn" href="mailto:hello@bibekbista.dev">Email directly</a>
+        </div>
       </div>
     </div>
 
@@ -1659,10 +1843,14 @@ footer .totop{display:inline-block;margin-top:16px;font-size:13px;font-weight:70
    ====================================================================== */
 (function(){
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var hoverCapable = window.matchMedia('(hover:hover) and (pointer:fine)').matches;
+  var hasGsap = !!window.gsap;
 
   var room = document.getElementById('hiringRoom');
   var ripple = document.getElementById('hireRipple');
   var plane = document.getElementById('roomPlane');
+  var drawLayer = document.getElementById('hireDrawLayer');
+  var drawPath = document.getElementById('hireDrawPath');
   var roomBack = document.getElementById('roomBack');
   var roomTitleEl = document.getElementById('hiringRoomTitle');
   var roomSubEl = document.getElementById('roomHeroSub');
@@ -1672,6 +1860,7 @@ footer .totop{display:inline-block;margin-top:16px;font-size:13px;font-weight:70
   var roomSendBtn = document.getElementById('roomSendBtn');
   var roomSuccess = document.getElementById('roomSuccess');
   var roomError = document.getElementById('roomError');
+  var roomSuccessNote = document.getElementById('roomSuccessNote');
   var roomResumeStatus = document.getElementById('roomResumeStatus');
   var pencil = document.getElementById('pencilDoodle');
   var messageField = document.getElementById('rf-message');
@@ -1680,8 +1869,106 @@ footer .totop{display:inline-block;margin-top:16px;font-size:13px;font-weight:70
 
   var lastFocused = null;
   var lastOrigin = {x: window.innerWidth/2, y: window.innerHeight/2};
-  var DEFAULT_TITLE = 'HIRE <span class="accent">BIBEK</span>.';
+  var DEFAULT_TITLE = '<span class="hw">HIRE</span> <span class="hw accent">BIBEK</span><span class="hw">.</span>';
   var DEFAULT_SUB = 'A creative recruitment desk, not a contact form. Pick what brings you here.';
+
+  var SPARKS = ['✦','✎','•'];
+
+  /* ---- signature opening sequence: a hand-drawn line grows from the
+     button, a few small marks travel along it, before the blob takes over ---- */
+  function runDrawSequence(originX, originY, reverse, cb){
+    if(reduced || !drawPath || !hasGsap){ cb(); return; }
+    var targetX = window.innerWidth * (reverse ? 0.5 : 0.62);
+    var targetY = window.innerHeight * (reverse ? 0.5 : 0.34);
+    var midX = (originX + targetX) / 2 + (reverse ? -60 : 60);
+    var midY = (originY + targetY) / 2 - 40;
+    var d = 'M ' + originX + ' ' + originY + ' Q ' + midX + ' ' + midY + ' ' + targetX + ' ' + targetY;
+    drawPath.setAttribute('d', d);
+    var len = 0;
+    try { len = drawPath.getTotalLength(); } catch(err){ cb(); return; }
+    gsap.set(drawPath, {strokeDasharray: len, strokeDashoffset: reverse ? 0 : len});
+    drawLayer.classList.add('active');
+
+    var sparkEls = SPARKS.map(function(glyph){
+      var s = document.createElement('span');
+      s.className = 'hire-spark';
+      s.textContent = glyph;
+      s.setAttribute('aria-hidden', 'true');
+      document.body.appendChild(s);
+      return s;
+    });
+
+    var tl = gsap.timeline({
+      onComplete: function(){
+        sparkEls.forEach(function(s){ s.remove(); });
+        drawLayer.classList.remove('active');
+        drawPath.setAttribute('d', '');
+        cb();
+      }
+    });
+    tl.to(drawPath, {strokeDashoffset: reverse ? len : 0, duration: 0.34, ease: 'power2.inOut'});
+    sparkEls.forEach(function(s, i){
+      var t = (i + 1) / (sparkEls.length + 1);
+      var px = originX + (targetX - originX) * t;
+      var py = originY + (targetY - originY) * t - Math.sin(t * Math.PI) * 40;
+      tl.set(s, {left: px, top: py}, i * 0.06)
+        .to(s, {opacity: 1, scale: 1, duration: 0.14, ease: 'back.out(2)'}, i * 0.06 + 0.03)
+        .to(s, {opacity: 0, scale: 0.5, duration: 0.18, ease: 'power1.in'}, i * 0.06 + 0.2);
+    });
+  }
+
+  /* ---- hero typography assembles word by word ---- */
+  function animateHeroIn(){
+    if(reduced || !hasGsap) return;
+    var words = roomTitleEl.querySelectorAll('.hw');
+    if(!words.length) return;
+    gsap.from(words, {
+      y: 26, opacity: 0, rotate: -3, duration: 0.55, stagger: 0.09,
+      ease: 'back.out(1.6)', delay: 0.1
+    });
+  }
+
+  /* ---- depth parallax: doodles (mid) + portrait (foreground) react to cursor ---- */
+  var parallaxBound = false;
+  function bindParallax(){
+    if(parallaxBound || reduced || !hoverCapable) return;
+    parallaxBound = true;
+    var targets = Array.prototype.slice.call(room.querySelectorAll('[data-depth]'));
+    if(!targets.length) return;
+    var movers = targets.map(function(el){
+      var depth = parseFloat(el.getAttribute('data-depth')) || 0.3;
+      if(hasGsap){
+        return {el: el, depth: depth, xTo: gsap.quickTo(el, 'x', {duration: 0.5, ease: 'power3.out'}), yTo: gsap.quickTo(el, 'y', {duration: 0.5, ease: 'power3.out'})};
+      }
+      return {el: el, depth: depth};
+    });
+    room.addEventListener('mousemove', function(e){
+      var r = room.getBoundingClientRect();
+      var relX = (e.clientX - r.width / 2) / r.width;
+      var relY = (e.clientY - r.height / 2) / r.height;
+      movers.forEach(function(m){
+        var dx = relX * 22 * m.depth, dy = relY * 22 * m.depth;
+        if(m.xTo){ m.xTo(dx); m.yTo(dy); }
+        else { m.el.style.transform = 'translate(' + dx.toFixed(1) + 'px,' + dy.toFixed(1) + 'px)'; }
+      });
+    });
+  }
+
+  /* ---- physical tilt for choice + proof cards ---- */
+  function bindTilt(selector, maxDeg){
+    if(reduced || !hoverCapable) return;
+    document.querySelectorAll(selector).forEach(function(card){
+      card.addEventListener('mousemove', function(e){
+        var r = card.getBoundingClientRect();
+        var px = (e.clientX - r.left) / r.width - 0.5;
+        var py = (e.clientY - r.top) / r.height - 0.5;
+        card.style.transform = 'rotateX(' + (-py * maxDeg).toFixed(2) + 'deg) rotateY(' + (px * maxDeg).toFixed(2) + 'deg) translateY(-4px)';
+      });
+      card.addEventListener('mouseleave', function(){
+        card.style.transform = '';
+      });
+    });
+  }
 
   var choiceCopy = {
     role:        {title:"Let's talk about the role.",       body:"Tell me what you're hiring for below, and I'll write back with where my experience actually fits.", lf:'A role'},
@@ -1699,11 +1986,11 @@ footer .totop{display:inline-block;margin-top:16px;font-size:13px;font-weight:70
   };
 
   function resetRoomState(){
-    document.querySelectorAll('.choice-card').forEach(function(c){ c.classList.remove('chosen'); });
+    document.querySelectorAll('.choice-card').forEach(function(c){ c.classList.remove('chosen', 'dimmed'); c.style.transform = ''; });
     if(responseEl){ responseEl.classList.remove('show'); responseEl.textContent = ''; }
     document.querySelectorAll('.why-tile').forEach(function(t){ t.classList.remove('open'); });
     if(whyPanel){ whyPanel.classList.remove('show'); whyPanel.textContent = ''; }
-    document.querySelectorAll('.proof-card').forEach(function(c){ c.classList.remove('open'); });
+    document.querySelectorAll('.proof-card').forEach(function(c){ c.classList.remove('open'); c.style.transform = ''; });
     if(roomTitleEl) roomTitleEl.innerHTML = DEFAULT_TITLE;
     if(roomSubEl) roomSubEl.textContent = DEFAULT_SUB;
     if(roomForm){ roomForm.style.display = ''; roomForm.reset(); }
@@ -1726,8 +2013,9 @@ footer .totop{display:inline-block;margin-top:16px;font-size:13px;font-weight:70
     e.preventDefault();
     if(room.classList.contains('visible')) return;
     lastFocused = document.activeElement;
+    var trigger = e.currentTarget;
 
-    var rect = e.currentTarget.getBoundingClientRect();
+    var rect = trigger.getBoundingClientRect();
     lastOrigin = {x: rect.left + rect.width / 2, y: rect.top + rect.height / 2};
     ripple.style.left = lastOrigin.x + 'px';
     ripple.style.top = lastOrigin.y + 'px';
@@ -1736,6 +2024,11 @@ footer .totop{display:inline-block;margin-top:16px;font-size:13px;font-weight:70
     var roomPortrait = document.getElementById('roomPortrait');
     if(portraitImg && roomPortrait && !roomPortrait.getAttribute('src')){
       roomPortrait.src = portraitImg.src;
+    }
+
+    /* step 1: the button compresses slightly, as if physically pressed */
+    if(hasGsap && !reduced){
+      gsap.fromTo(trigger, {scale: 1}, {scale: 0.94, duration: 0.09, ease: 'power1.in', yoyo: true, repeat: 1});
     }
 
     document.documentElement.style.overflow = 'hidden';
@@ -1748,22 +2041,31 @@ footer .totop{display:inline-block;margin-top:16px;font-size:13px;font-weight:70
       ripple.style.width = '';
       ripple.style.height = '';
       roomBack.focus();
+      animateHeroIn();
+      bindParallax();
     }
 
     if(reduced){
       reveal();
       return;
     }
-    ripple.classList.remove('retract');
-    ripple.style.width = '';
-    ripple.style.height = '';
-    ripple.style.opacity = '1';
-    void ripple.offsetWidth;
-    ripple.classList.add('launch');
-    ripple.addEventListener('animationend', function handler(){
-      ripple.removeEventListener('animationend', handler);
-      reveal();
-    }, {once:true});
+
+    function launchRipple(){
+      ripple.classList.remove('retract');
+      ripple.style.width = '';
+      ripple.style.height = '';
+      ripple.style.opacity = '1';
+      void ripple.offsetWidth;
+      ripple.classList.add('launch');
+      ripple.addEventListener('animationend', function handler(){
+        ripple.removeEventListener('animationend', handler);
+        reveal();
+      }, {once:true});
+    }
+
+    /* step 2–5: a hand-drawn line grows from the button and travels across
+       the screen, carrying a few small marks, before the shape takes over */
+    runDrawSequence(lastOrigin.x, lastOrigin.y, false, launchRipple);
   }
 
   function closeRoom(){
@@ -1800,8 +2102,11 @@ footer .totop{display:inline-block;margin-top:16px;font-size:13px;font-weight:70
       ripple.style.width = '';
       ripple.style.height = '';
       ripple.style.opacity = '0';
-      resetRoomState();
-      if(lastFocused && lastFocused.focus) lastFocused.focus();
+      /* the line withdraws back into the button — closing the chapter */
+      runDrawSequence(lastOrigin.x, lastOrigin.y, true, function(){
+        resetRoomState();
+        if(lastFocused && lastFocused.focus) lastFocused.focus();
+      });
     }, {once:true});
   }
 
@@ -1814,13 +2119,19 @@ footer .totop{display:inline-block;margin-top:16px;font-size:13px;font-weight:70
     if(e.key === 'Escape' && room.classList.contains('visible')) closeRoom();
   });
 
-  /* choice cards */
+  /* choice cards — selecting one brings it forward, the rest step back */
   document.querySelectorAll('.choice-card').forEach(function(card){
     card.addEventListener('click', function(){
-      document.querySelectorAll('.choice-card').forEach(function(c){ c.classList.remove('chosen'); });
-      card.classList.add('chosen');
+      document.querySelectorAll('.choice-card').forEach(function(c){
+        c.classList.remove('chosen');
+        if(c !== card) c.classList.add('dimmed'); else c.classList.remove('dimmed');
+      });
       var copy = choiceCopy[card.getAttribute('data-choice')];
       if(!copy) return;
+      card.classList.add('chosen');
+      if(hasGsap && !reduced){
+        gsap.fromTo(roomTitleEl, {opacity: 0, y: 10}, {opacity: 1, y: 0, duration: 0.35, ease: 'power2.out'});
+      }
       roomTitleEl.textContent = copy.title;
       roomSubEl.textContent = 'Scroll down for why, what I\'ve built, and how to reach me.';
       responseEl.textContent = copy.body;
@@ -1829,6 +2140,8 @@ footer .totop{display:inline-block;margin-top:16px;font-size:13px;font-weight:70
       if(lf) lf.value = copy.lf;
     });
   });
+  bindTilt('.choice-card', 6);
+  bindTilt('.proof-card', 4);
 
   /* why bibek tiles */
   document.querySelectorAll('.why-tile').forEach(function(tile){
@@ -1879,17 +2192,35 @@ footer .totop{display:inline-block;margin-top:16px;font-size:13px;font-weight:70
     });
   }
 
-  /* send flow: real mailto submission, paper-airplane feedback, honest success/error states */
+  /* send flow: real mailto submission, paper-airplane feedback with a
+     trail, and an honest success/error read on whether an email app
+     actually opened (mailto can't report success on its own) */
+  function spawnTrail(x, y){
+    if(reduced) return;
+    var dot = document.createElement('span');
+    dot.className = 'room-plane-trail';
+    dot.style.left = x + 'px';
+    dot.style.top = y + 'px';
+    document.body.appendChild(dot);
+    setTimeout(function(){ dot.remove(); }, 620);
+  }
+
   function launchPlane(isError, cb){
     if(reduced){ cb(); return; }
     var btnRect = roomSendBtn.getBoundingClientRect();
-    plane.style.left = (btnRect.left + btnRect.width / 2) + 'px';
-    plane.style.top = (btnRect.top + btnRect.height / 2) + 'px';
+    var startX = btnRect.left + btnRect.width / 2, startY = btnRect.top + btnRect.height / 2;
+    plane.style.left = startX + 'px';
+    plane.style.top = startY + 'px';
     plane.classList.remove('fly', 'wobble');
     void plane.offsetWidth;
     plane.classList.add(isError ? 'wobble' : 'fly');
+    var trailTimer = isError ? null : setInterval(function(){
+      var r = plane.getBoundingClientRect();
+      spawnTrail(r.left + r.width / 2, r.top + r.height / 2);
+    }, 90);
     plane.addEventListener('animationend', function handler(){
       plane.removeEventListener('animationend', handler);
+      if(trailTimer) clearInterval(trailTimer);
       cb();
     }, {once:true});
   }
@@ -1904,26 +2235,55 @@ footer .totop{display:inline-block;margin-top:16px;font-size:13px;font-weight:70
       var lookingFor = document.getElementById('rf-lookingfor').value;
       var msg = document.getElementById('rf-message').value;
       roomSendBtn.classList.add('sending');
+
+      var subject = encodeURIComponent('Portfolio message from ' + name + ' — ' + lookingFor);
+      var lines = [msg, ''];
+      if(company) lines.push('Company/organization: ' + company);
+      lines.push('— ' + name + ' (' + email + ')');
+      var body = encodeURIComponent(lines.join('\n'));
+      var mailtoUrl = 'mailto:hello@bibekbista.dev?subject=' + subject + '&body=' + body;
+
+      /* honesty check: a mailto link only "succeeds" if the browser hands
+         off to a mail app. That app opening reliably blurs this tab —
+         so we listen for that instead of assuming success. */
+      var settled = false;
+      function onBlur(){
+        settled = true;
+        window.removeEventListener('blur', onBlur);
+        showSuccess();
+      }
+      window.addEventListener('blur', onBlur);
+
       try {
-        var subject = encodeURIComponent('Portfolio message from ' + name + ' — ' + lookingFor);
-        var lines = [msg, ''];
-        if(company) lines.push('Company/organization: ' + company);
-        lines.push('— ' + name + ' (' + email + ')');
-        var body = encodeURIComponent(lines.join('\n'));
-        window.location.href = 'mailto:hello@bibekbista.dev?subject=' + subject + '&body=' + body;
+        window.location.href = mailtoUrl;
+      } catch(err){
+        window.removeEventListener('blur', onBlur);
+        settled = true;
+        launchPlane(true, showError);
+        return;
+      }
+
+      setTimeout(function(){
+        if(settled) return;
+        settled = true;
+        window.removeEventListener('blur', onBlur);
+        launchPlane(true, showError);
+      }, 900);
+
+      function showSuccess(){
+        roomSuccessNote.textContent = "Your message is on its way in your email app — thanks for reaching out. I'll get back to you as soon as possible.";
         launchPlane(false, function(){
           roomSendBtn.classList.remove('sending');
           roomForm.style.display = 'none';
           roomSuccess.classList.add('show');
           roomSuccess.querySelector('.room-btn').focus();
         });
-      } catch(err){
-        launchPlane(true, function(){
-          roomSendBtn.classList.remove('sending');
-          roomForm.style.display = 'none';
-          roomError.classList.add('show');
-          roomError.querySelector('.room-btn').focus();
-        });
+      }
+      function showError(){
+        roomSendBtn.classList.remove('sending');
+        roomForm.style.display = 'none';
+        roomError.classList.add('show');
+        roomError.querySelector('.room-btn').focus();
       }
     });
   }
@@ -1935,21 +2295,18 @@ footer .totop{display:inline-block;margin-top:16px;font-size:13px;font-weight:70
     document.getElementById('rf-name').focus();
   });
 
+  var roomSendAnotherBtn = document.getElementById('roomSendAnotherBtn');
+  if(roomSendAnotherBtn) roomSendAnotherBtn.addEventListener('click', function(){
+    roomSuccess.classList.remove('show');
+    roomForm.style.display = '';
+    roomForm.reset();
+    if(pencil) pencil.classList.remove('active');
+    document.getElementById('rf-name').focus();
+  });
+
   var roomBackFromSuccess = document.getElementById('roomBackFromSuccess');
   if(roomBackFromSuccess) roomBackFromSuccess.addEventListener('click', closeRoom);
 
-  /* subtle desktop-only portrait parallax */
-  if(!reduced && window.matchMedia('(hover:hover) and (pointer:fine)').matches){
-    var portraitCard = document.querySelector('.portrait-card');
-    if(portraitCard){
-      room.addEventListener('mousemove', function(e){
-        var r = room.getBoundingClientRect();
-        var relX = (e.clientX - r.width / 2) / r.width;
-        var relY = (e.clientY - r.height / 2) / r.height;
-        portraitCard.style.transform = 'rotate(2deg) translate(' + (relX * 12).toFixed(1) + 'px,' + (relY * 12).toFixed(1) + 'px)';
-      });
-    }
-  }
 })();
 </script>
 </body>

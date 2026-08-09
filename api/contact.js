@@ -44,13 +44,13 @@ function stripHeaderChars(str) {
 }
 
 // Escape for safe insertion into the HTML email body.
-function escapeHtml(str) {
-  return String(str || "")
+function escapeHtml(value) {
+  return String(value ?? "")
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#39;");
+    .replace(/'/g, "&#039;");
 }
 
 const OPPORTUNITY_LABELS = {
@@ -184,12 +184,17 @@ module.exports = async function handler(req, res) {
   `;
 
   const resend = new Resend(RESEND_API_KEY);
+  
+  // DEBUG: Log recipient information to help troubleshoot email delivery
+  console.log("DEBUG recipients array:", recipients);
+  console.log("DEBUG CONTACT_EMAIL_TO raw:", CONTACT_EMAIL_TO);
+  console.log("DEBUG EMAIL_FROM:", EMAIL_FROM);
 
   try {
-    const { error } = await resend.emails.send({
+    const { data, error } = await resend.emails.send({
       from: EMAIL_FROM,
       to: recipients,
-      reply_to: cleanEmail,
+      replyTo: cleanEmail,
       subject: subject,
       html: htmlBody,
     });
@@ -203,6 +208,7 @@ module.exports = async function handler(req, res) {
       return;
     }
 
+    console.log("Email sent successfully. Resend response:", data);
     res.status(200).json({ success: true });
   } catch (err) {
     console.error("Contact endpoint error:", err);

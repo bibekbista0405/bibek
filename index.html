@@ -791,6 +791,7 @@ footer .totop{display:inline-block;margin-top:16px;font-size:13px;font-weight:70
 /* contact / form */
 .room-contact{margin-top:60px;padding-bottom:20px;}
 .room-form{max-width:520px;margin:30px auto 0;display:flex;flex-direction:column;gap:16px;position:relative;}
+.room-hp{position:absolute !important;left:-9999px !important;top:auto;width:1px;height:1px;overflow:hidden;}
 .room-field{position:relative;}
 .room-field label{
   font-size:12.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;
@@ -1548,10 +1549,19 @@ footer .totop{display:inline-block;margin-top:16px;font-size:13px;font-weight:70
           </select>
         </div>
         <div class="room-field">
+          <label for="rf-role">Role / position <span style="text-transform:none;font-weight:400;">(optional)</span></label>
+          <input id="rf-role" name="role" type="text" placeholder="e.g. Frontend Developer Intern">
+        </div>
+        <div class="room-field">
           <label for="rf-message">Message</label>
-          <textarea id="rf-message" name="message" placeholder="Tell me what you're building, hiring for, or thinking about..." required></textarea>
+          <textarea id="rf-message" name="message" placeholder="Tell me what you're building, hiring for, or thinking about..." required maxlength="5000"></textarea>
           <span class="pencil-doodle" id="pencilDoodle" aria-hidden="true">✏️</span>
         </div>
+        <div class="room-field room-hp" aria-hidden="true">
+          <label for="rf-website">Website</label>
+          <input id="rf-website" name="website" type="text" tabindex="-1" autocomplete="off">
+        </div>
+        <p class="form-status" id="roomFormStatus" role="status" aria-live="polite"></p>
         <button type="submit" id="roomSendBtn" data-cursor-label="Let's talk">Send it <span class="send-arrow">→</span></button>
       </form>
 
@@ -1565,8 +1575,8 @@ footer .totop{display:inline-block;margin-top:16px;font-size:13px;font-weight:70
       </div>
 
       <div class="room-status-view" id="roomError">
-        <h3>The message got lost.</h3>
-        <p>Looks like there's no email app to hand it to. No harm done — try again, or email me directly.</p>
+        <h3>The message didn't go through.</h3>
+        <p id="roomErrorNote">Something went wrong on my end. Your message wasn't lost — try again, or email me directly.</p>
         <div class="room-btn-row">
           <button type="button" class="room-btn primary" id="roomRetryBtn">Try again</button>
           <a class="room-btn" href="mailto:hello@bibekbista.dev">Email directly</a>
@@ -2192,9 +2202,10 @@ footer .totop{display:inline-block;margin-top:16px;font-size:13px;font-weight:70
     });
   }
 
-  /* send flow: real mailto submission, paper-airplane feedback with a
-     trail, and an honest success/error read on whether an email app
-     actually opened (mailto can't report success on its own) */
+  /* Same-origin API route — this file and /api/contact.js deploy together
+     as one Vercel project, so no URL ever needs to be configured here. */
+  var CONTACT_API_URL = '/api/contact';
+
   function spawnTrail(x, y){
     if(reduced) return;
     var dot = document.createElement('span');
@@ -2225,71 +2236,87 @@ footer .totop{display:inline-block;margin-top:16px;font-size:13px;font-weight:70
     }, {once:true});
   }
 
+  var roomFormStatus = document.getElementById('roomFormStatus');
+  var roomErrorNote = document.getElementById('roomErrorNote');
+  var roomSubmitting = false;
+
   if(roomForm){
     roomForm.addEventListener('submit', function(e){
       e.preventDefault();
+      if(roomSubmitting) return; // block duplicate submits while pending
       if(!roomForm.checkValidity()){ roomForm.reportValidity(); return; }
-      var name = document.getElementById('rf-name').value;
-      var email = document.getElementById('rf-email').value;
-      var company = document.getElementById('rf-company').value;
+
+      var name = document.getElementById('rf-name').value.trim();
+      var email = document.getElementById('rf-email').value.trim();
+      var company = document.getElementById('rf-company').value.trim();
+      var role = document.getElementById('rf-role').value.trim();
       var lookingFor = document.getElementById('rf-lookingfor').value;
-      var msg = document.getElementById('rf-message').value;
+      var msg = document.getElementById('rf-message').value.trim();
+      var website = document.getElementById('rf-website').value; // honeypot
+
+      roomSubmitting = true;
       roomSendBtn.classList.add('sending');
+      roomSendBtn.disabled = true;
+      roomSendBtn.textContent = 'Sending...';
+      if(roomFormStatus) roomFormStatus.textContent = 'Sending your message...';
 
-      var subject = encodeURIComponent('Portfolio message from ' + name + ' — ' + lookingFor);
-      var lines = [msg, ''];
-      if(company) lines.push('Company/organization: ' + company);
-      lines.push('— ' + name + ' (' + email + ')');
-      var body = encodeURIComponent(lines.join('\n'));
-      var mailtoUrl = 'mailto:hello@bibekbista.dev?subject=' + subject + '&body=' + body;
+      fetch(CONTACT_API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: name, email: email, company: company, role: role, lookingFor: lookingFor, message: msg, website: website })
+      })
+      .then(function(res){
+        return res.json().catch(function(){ return {}; }).then(function(data){
+          return { ok: res.ok, data: data };
+        });
+      })
+      .then(function(result){
+        if(result.ok && result.data && result.data.success){
+          showSuccess();
+        } else {
+          showError(result.data && result.data.error);
+        }
+      })
+      .catch(function(){
+        showError();
+      });
 
-      /* honesty check: a mailto link only "succeeds" if the browser hands
-         off to a mail app. That app opening reliably blurs this tab —
-         so we listen for that instead of assuming success. */
-      var settled = false;
-      function onBlur(){
-        settled = true;
-        window.removeEventListener('blur', onBlur);
-        showSuccess();
+      function resetSendBtn(){
+        roomSubmitting = false;
+        roomSendBtn.classList.remove('sending');
+        roomSendBtn.disabled = false;
+        roomSendBtn.innerHTML = 'Send it <span class="send-arrow">→</span>';
       }
-      window.addEventListener('blur', onBlur);
-
-      try {
-        window.location.href = mailtoUrl;
-      } catch(err){
-        window.removeEventListener('blur', onBlur);
-        settled = true;
-        launchPlane(true, showError);
-        return;
-      }
-
-      setTimeout(function(){
-        if(settled) return;
-        settled = true;
-        window.removeEventListener('blur', onBlur);
-        launchPlane(true, showError);
-      }, 900);
 
       function showSuccess(){
-        roomSuccessNote.textContent = "Your message is on its way in your email app — thanks for reaching out. I'll get back to you as soon as possible.";
+        roomSuccessNote.textContent = "Your message is on its way to Bibek. I'll get back to you as soon as possible.";
+        if(roomFormStatus) roomFormStatus.textContent = '';
         launchPlane(false, function(){
-          roomSendBtn.classList.remove('sending');
+          resetSendBtn();
           roomForm.style.display = 'none';
           roomSuccess.classList.add('show');
           roomSuccess.querySelector('.room-btn').focus();
         });
       }
-      function showError(){
-        roomSendBtn.classList.remove('sending');
-        roomForm.style.display = 'none';
-        roomError.classList.add('show');
-        roomError.querySelector('.room-btn').focus();
+      function showError(errMsg){
+        if(roomErrorNote){
+          roomErrorNote.textContent = errMsg || "Something went wrong on my end. Your message wasn't lost — try again, or email me directly.";
+        }
+        if(roomFormStatus) roomFormStatus.textContent = '';
+        launchPlane(true, function(){
+          resetSendBtn();
+          roomForm.style.display = 'none';
+          roomError.classList.add('show');
+          roomError.querySelector('.room-btn').focus();
+        });
       }
     });
   }
 
   var roomRetryBtn = document.getElementById('roomRetryBtn');
   if(roomRetryBtn) roomRetryBtn.addEventListener('click', function(){
+    // form data (name/email/company/role/message) is untouched since we
+    // never call roomForm.reset() on error — visitor doesn't retype
     roomError.classList.remove('show');
     roomForm.style.display = '';
     document.getElementById('rf-name').focus();

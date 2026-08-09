@@ -1,0 +1,51 @@
+BIBEK BISTA - Creative Developer · AI Builder · Systems Engineer
+Email: bibekbista105@gmail.com | GitHub: https://github.com/bibekbista0405 | Location: Dallas, TX / Remote
+
+================================================================================
+ABOUT
+================================================================================
+Ambitious Software Engineer with hands-on experience building complex desktop applications, real-time web platforms, and AI-integrated pipelines. Specialized in React, TypeScript, Electron, Node.js, and SQLite with a strong focus on product architecture and user interaction design.
+
+================================================================================
+TECHNICAL SKILLS
+================================================================================
+- Languages & Core Frameworks: TypeScript, JavaScript (ESNext), React 18, Node.js, Python, HTML5/CSS3
+- Systems & Architecture: Electron, IPC Protocol, WebSockets, SQLite / better-sqlite3, Zustand, Vite
+- Backend & APIs: Express.js, REST APIs, Gemini AI API (@google/genai), Socket.io, JSON Schema
+- Frontend & Creative Tech: Tailwind CSS, Three.js / WebGL, Framer Motion / Motion, Lucide Icons, UI/UX Design Systems
+- Tools & DevOps: Git & GitHub, Electron Builder, npm/pnpm, esbuild, Linux Shell, VS Code
+
+================================================================================
+FEATURED PROJECTS & SYSTEMS
+================================================================================
+DASH Desktop Browser [Tech: Electron, React, TypeScript, SQLite, Vite, Zustand]
+Privacy-focused desktop browser with isolated IPC IPC bridge, local SQLite history engine, and custom multi-tab sessions.
+
+LivePad [Tech: React, WebSockets, Monaco Editor, Express]
+Real-time collaborative code editor with live split-screen preview and instant socket sync.
+
+Social AI Scanner [Tech: TypeScript, Gemini API, Express, Recharts]
+AI sentiment pipeline classifying social feed streams into structured actionable insights.
+
+
+================================================================================
+EXPERIENCE
+================================================================================
+Lead Architect & Creator @ DASH Desktop Browser Project (Open Source) (2024 — Present)
+* Architected a privacy-first desktop web browser using Electron, React, TypeScript, Vite, and SQLite.
+* Implemented secure Inter-Process Communication (IPC) channels with context Isolation for safe renderer execution.
+* Engineered local-first SQLite database layer for sub-millisecond bookmark and history query speeds.
+* Built dynamic multi-tab manager with Zustand state stores and customizable dark UI themes.
+
+Full-Stack Developer & Open Source Builder @ Independent Software Engineering (2023 — Present)
+* Engineered LivePad: real-time collaborative Markdown editor utilizing WebSockets and Monaco Editor integration.
+* Created N-B Chat: low-latency socket-based encrypted room communication platform.
+* Developed Social AI Scanner: automated sentiment analysis pipeline leveraging Gemini AI models and React dashboards.
+* Designed Extreme Fitness: WebGL 3D muscle-targeting workout application using Three.js and custom shader physics.
+
+
+================================================================================
+EDUCATION
+================================================================================
+Bachelor of Science in Computer Science / Software Engineering
+University / Higher Education (2022 — Present)

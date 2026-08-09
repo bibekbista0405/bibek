@@ -462,6 +462,287 @@ footer .totop{display:inline-block;margin-top:16px;font-size:13px;font-weight:70
 
 /* MAGNETIC BUTTON (JS-driven translate, this just sets up the transition) */
 .magnetic{will-change:transform;}
+
+/* ======================================================================
+   HIRING ROOM — a completely different world for the hiring experience
+   ====================================================================== */
+
+/* ---- launchpad: replaces the old plain contact form inside #contact ---- */
+.hire-launchpad{
+  background:var(--ink);color:var(--cream);border-radius:var(--radius-lg);
+  padding:76px 40px;text-align:center;position:relative;overflow:hidden;
+}
+.hire-launchpad::before{
+  content:"";position:absolute;inset:0;pointer-events:none;opacity:0.5;
+  background:radial-gradient(circle at 15% 20%, rgba(255,180,67,0.14), transparent 45%),
+             radial-gradient(circle at 85% 80%, rgba(95,168,211,0.14), transparent 45%);
+}
+.hire-launchpad h2{color:var(--cream);font-size:clamp(32px,5.5vw,54px);position:relative;}
+.hire-launchpad p.hl-sub{color:#D9CFC0;margin-top:16px;max-width:480px;margin-left:auto;margin-right:auto;font-size:16px;position:relative;}
+#hireTriggerBtn{
+  position:relative;margin-top:36px;display:inline-flex;align-items:center;gap:12px;
+  background:var(--coral);color:var(--cream);padding:20px 38px;border-radius:100px;
+  font-family:'Fredoka';font-weight:600;font-size:19px;box-shadow:0 20px 44px -18px rgba(214,80,47,0.65);
+  transition:transform .25s cubic-bezier(.2,.8,.2,1), box-shadow .25s ease;
+}
+#hireTriggerBtn:hover{transform:translateY(-4px) scale(1.02);box-shadow:0 26px 54px -16px rgba(214,80,47,0.75);}
+#hireTriggerBtn .hl-arrow{transition:transform .25s ease;}
+#hireTriggerBtn:hover .hl-arrow{transform:translateX(5px);}
+.hl-alt{position:relative;margin-top:22px;display:flex;justify-content:center;gap:16px;flex-wrap:wrap;font-size:13.5px;}
+.hl-alt a{color:#D9CFC0;text-decoration:underline;text-underline-offset:3px;}
+.hl-alt a:hover{color:var(--cream);}
+.hl-noscript{color:#D9CFC0;font-size:13px;margin-top:18px;position:relative;}
+
+/* ---- transition ripple, launches from the trigger button ---- */
+#hireRipple{
+  position:fixed;left:0;top:0;width:1px;height:1px;border-radius:50%;
+  background:var(--room-bg,#1B1712);z-index:9500;pointer-events:none;
+  transform:translate(-50%,-50%);opacity:0;
+}
+#hireRipple.launch{
+  animation:hireRippleGrow .8s cubic-bezier(.3,.85,.35,1) forwards;
+}
+#hireRipple.retract{
+  animation:hireRippleShrink .6s cubic-bezier(.5,0,.75,.2) forwards;
+}
+@keyframes hireRippleGrow{
+  0%{width:1px;height:1px;opacity:1;}
+  100%{width:340vmax;height:340vmax;opacity:1;}
+}
+@keyframes hireRippleShrink{
+  0%{width:340vmax;height:340vmax;opacity:1;}
+  100%{width:1px;height:1px;opacity:1;}
+}
+@media (prefers-reduced-motion: reduce){
+  #hireRipple.launch, #hireRipple.retract{animation:none;}
+}
+
+/* ---- the room itself ---- */
+:root{
+  --room-bg:#1B1712;
+  --room-bg-2:#241F19;
+  --room-glass:rgba(255,253,248,0.06);
+  --room-glass-2:rgba(255,253,248,0.1);
+  --room-border:rgba(255,253,248,0.14);
+  --room-text:#F3ECDD;
+  --room-text-soft:#B9AE9C;
+}
+#hiringRoom{
+  position:fixed;inset:0;z-index:9000;background:var(--room-bg);color:var(--room-text);
+  overflow-y:auto;overflow-x:hidden;display:none;
+  font-family:'Plus Jakarta Sans',system-ui,sans-serif;
+  -webkit-overflow-scrolling:touch;
+}
+#hiringRoom.visible{display:block;}
+#hiringRoom::-webkit-scrollbar{width:10px;}
+#hiringRoom::-webkit-scrollbar-thumb{background:rgba(255,253,248,0.16);border-radius:10px;}
+
+.room-bg-glow{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:0.65;}
+.room-bg-glow span{position:absolute;border-radius:50%;filter:blur(70px);opacity:0.28;}
+.room-bg-glow .g1{width:520px;height:520px;top:-140px;left:-120px;background:var(--coral);}
+.room-bg-glow .g2{width:460px;height:460px;bottom:-140px;right:-100px;background:var(--sky);}
+.room-bg-glow .g3{width:340px;height:340px;top:40%;left:60%;background:var(--plum);}
+
+.room-topbar{
+  position:sticky;top:0;z-index:20;display:flex;justify-content:space-between;align-items:center;
+  padding:20px 28px;background:linear-gradient(to bottom, rgba(27,23,18,0.92), rgba(27,23,18,0));
+  backdrop-filter:blur(6px);
+}
+#roomBack{
+  display:inline-flex;align-items:center;gap:8px;color:var(--room-text);
+  font-weight:600;font-size:14px;padding:10px 18px;border-radius:100px;
+  background:var(--room-glass);border:1px solid var(--room-border);
+  transition:transform .2s ease, background .2s ease;
+}
+#roomBack:hover{background:var(--room-glass-2);transform:translateX(-3px);}
+.room-status-chip{
+  display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;
+  color:var(--sage);padding:8px 14px;border-radius:100px;background:var(--room-glass);
+  border:1px solid var(--room-border);
+}
+.room-status-chip .pulse{width:7px;height:7px;border-radius:50%;background:var(--sage);animation:pulse 1.8s infinite;}
+
+.room-wrap{max-width:920px;margin:0 auto;padding:20px 28px 100px;position:relative;z-index:1;}
+@media (max-width:600px){.room-wrap{padding:14px 18px 90px;}}
+
+/* room hero */
+.room-hero{display:grid;grid-template-columns:1.2fr 0.8fr;gap:40px;align-items:center;padding:30px 0 20px;}
+@media (max-width:760px){.room-hero{grid-template-columns:1fr;gap:24px;}}
+.room-eyebrow{font-family:'Caveat';font-size:22px;color:var(--gold);transform:rotate(-2deg);display:inline-block;}
+.room-title{font-family:'Fredoka';font-size:clamp(38px,7vw,64px);line-height:1.02;margin-top:6px;color:var(--room-text);}
+.room-title .accent{color:var(--coral);}
+.room-sub{margin-top:16px;color:var(--room-text-soft);font-size:16px;max-width:420px;}
+
+.portrait-card{
+  position:relative;background:var(--room-glass);border:1px solid var(--room-border);
+  border-radius:var(--radius-lg);padding:16px;backdrop-filter:blur(14px);
+  box-shadow:0 30px 60px -20px rgba(0,0,0,0.5);max-width:230px;margin-left:auto;
+  transform:rotate(2deg);
+}
+@media (max-width:760px){.portrait-card{margin:0 auto;}}
+.portrait-card img{width:100%;aspect-ratio:1/1.05;object-fit:cover;object-position:center 22%;border-radius:var(--radius-md);background:#333;}
+.portrait-card .pc-name{font-family:'Fredoka';font-size:17px;margin-top:12px;color:var(--room-text);}
+.portrait-card .pc-role{font-size:12px;color:var(--room-text-soft);margin-top:4px;line-height:1.5;}
+.pc-tape{position:absolute;top:-10px;left:50%;transform:translateX(-50%) rotate(-4deg);width:56px;height:20px;background:rgba(255,180,67,0.85);box-shadow:0 2px 5px rgba(0,0,0,0.35);}
+
+.room-sticky{
+  display:inline-block;background:var(--gold);color:var(--ink);padding:10px 16px;
+  border-radius:5px 16px 5px 16px;font-family:'Caveat';font-size:19px;line-height:1.15;
+  transform:rotate(-3deg);box-shadow:var(--shadow-tiny);margin-top:18px;
+}
+.room-doodle-arrow{font-family:'Caveat';font-size:17px;color:var(--room-text-soft);margin-top:10px;display:flex;align-items:center;gap:6px;}
+
+/* choice prompt */
+.room-section{padding:56px 0 0;}
+.room-h2{font-family:'Fredoka';font-size:clamp(24px,4vw,34px);color:var(--room-text);text-align:center;}
+.room-h2 small{display:block;font-family:'Plus Jakarta Sans';font-weight:700;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--room-text-soft);margin-bottom:8px;}
+
+.choice-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-top:32px;}
+.choice-card{
+  background:var(--room-glass);border:1px solid var(--room-border);border-radius:var(--radius-md);
+  padding:22px 16px;text-align:left;color:var(--room-text);cursor:pointer;
+  transition:transform .25s cubic-bezier(.2,.8,.2,1), background .25s ease, border-color .25s ease;
+  position:relative;
+}
+.choice-card:nth-child(odd){transform:rotate(-1.2deg);}
+.choice-card:nth-child(even){transform:rotate(1.2deg);}
+.choice-card:hover{background:var(--room-glass-2);transform:translateY(-5px) rotate(0deg);border-color:rgba(255,180,67,0.5);}
+.choice-card.chosen{background:rgba(255,180,67,0.14);border-color:var(--gold);transform:translateY(-5px) rotate(0deg);}
+.choice-card .cc-icon{font-size:24px;display:block;margin-bottom:10px;transition:transform .3s cubic-bezier(.34,1.56,.64,1);}
+.choice-card:hover .cc-icon, .choice-card.chosen .cc-icon{transform:scale(1.18) rotate(-6deg);}
+.choice-card .cc-label{font-weight:700;font-size:14px;line-height:1.35;}
+
+.room-response{
+  max-width:560px;margin:26px auto 0;text-align:center;background:var(--room-glass);
+  border:1px dashed var(--room-border);border-radius:var(--radius-md);padding:20px 24px;
+  font-size:14.5px;color:var(--room-text-soft);display:none;
+}
+.room-response.show{display:block;}
+
+/* pill row */
+.room-pillrow{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:22px;}
+.room-pill{font-size:13.5px;font-weight:600;padding:9px 16px;border-radius:100px;background:var(--room-glass);border:1px solid var(--room-border);color:var(--room-text);}
+
+/* why bibek */
+.why-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:30px;}
+@media (max-width:700px){.why-grid{grid-template-columns:repeat(3,1fr);}}
+@media (max-width:460px){.why-grid{grid-template-columns:repeat(2,1fr);}}
+.why-tile{
+  background:var(--room-glass);border:1px solid var(--room-border);border-radius:var(--radius-md);
+  padding:18px 10px;text-align:center;cursor:pointer;transition:transform .2s ease, background .2s ease;
+}
+.why-tile:hover, .why-tile.open{background:var(--room-glass-2);transform:translateY(-4px);}
+.why-tile .wt-label{font-family:'Fredoka';font-size:14px;color:var(--room-text);}
+.why-panel{
+  grid-column:1/-1;background:var(--room-glass);border:1px dashed var(--room-border);
+  border-radius:var(--radius-md);padding:18px 20px;font-size:14.5px;color:var(--room-text-soft);
+  display:none;margin-top:2px;
+}
+.why-panel.show{display:block;}
+
+/* project proof */
+.proof-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:30px;}
+@media (max-width:600px){.proof-grid{grid-template-columns:1fr;}}
+.proof-card{
+  background:var(--room-glass);border:1px solid var(--room-border);border-radius:var(--radius-md);
+  padding:20px;cursor:pointer;transition:transform .25s ease, border-color .25s ease;
+}
+.proof-card:hover, .proof-card.open{transform:translateY(-4px);border-color:rgba(124,174,141,0.5);}
+.proof-card h4{font-family:'Fredoka';font-size:18px;color:var(--room-text);}
+.proof-card .pc-tagline{font-size:13px;color:var(--room-text-soft);margin-top:4px;}
+.proof-detail{display:none;margin-top:12px;padding-top:12px;border-top:1px dashed var(--room-border);font-size:13.5px;color:var(--room-text-soft);}
+.proof-card.open .proof-detail{display:block;}
+.proof-detail .pd-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
+.proof-detail .tag{font-size:11px;font-weight:600;background:var(--room-glass-2);padding:4px 9px;border-radius:100px;color:var(--room-text);}
+
+/* resume + availability */
+.room-twocol{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:30px;}
+@media (max-width:700px){.room-twocol{grid-template-columns:1fr;}}
+.room-card{background:var(--room-glass);border:1px solid var(--room-border);border-radius:var(--radius-lg);padding:26px;}
+.room-card h3{font-family:'Fredoka';font-size:19px;color:var(--room-text);}
+.room-card .room-btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;}
+.room-btn{
+  display:inline-flex;align-items:center;gap:8px;padding:11px 18px;border-radius:100px;
+  font-weight:600;font-size:13.5px;background:var(--room-glass-2);color:var(--room-text);
+  border:1px solid var(--room-border);transition:transform .2s ease, border-color .2s ease;
+}
+.room-btn:hover{transform:translateY(-2px);border-color:var(--gold);}
+.room-btn.primary{background:var(--coral);border-color:var(--coral);color:var(--cream);}
+.room-btn.primary:hover{border-color:var(--coral-dark);}
+.room-status-note{font-size:12.5px;color:var(--room-text-soft);margin-top:10px;min-height:16px;}
+
+/* contact / form */
+.room-contact{margin-top:60px;padding-bottom:20px;}
+.room-form{max-width:520px;margin:30px auto 0;display:flex;flex-direction:column;gap:16px;position:relative;}
+.room-field{position:relative;}
+.room-field label{
+  font-size:12.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;
+  color:var(--room-text-soft);display:block;margin-bottom:7px;
+}
+.room-field input, .room-field select, .room-field textarea{
+  width:100%;padding:14px 16px;border-radius:var(--radius-sm);
+  border:1px solid var(--room-border);background:var(--room-glass);color:var(--room-text);
+  font-family:inherit;font-size:14.5px;transition:border-color .2s ease, background .2s ease;
+}
+.room-field input::placeholder, .room-field textarea::placeholder{color:#7A6F60;}
+.room-field input:focus, .room-field select:focus, .room-field textarea:focus{
+  outline:none;border-color:var(--gold);background:var(--room-glass-2);
+}
+.room-field textarea{resize:vertical;min-height:110px;}
+.pencil-doodle{position:absolute;right:14px;top:38px;font-size:16px;opacity:0;transition:opacity .25s ease;pointer-events:none;}
+.pencil-doodle.active{opacity:0.85;animation:pencilWiggle 1.4s ease-in-out infinite;}
+@keyframes pencilWiggle{0%,100%{transform:rotate(-8deg);}50%{transform:rotate(8deg);}}
+
+#roomSendBtn{
+  align-self:flex-start;display:inline-flex;align-items:center;gap:10px;
+  background:var(--coral);color:var(--cream);padding:15px 26px;border-radius:100px;
+  font-family:'Fredoka';font-weight:600;font-size:15px;position:relative;overflow:visible;
+  transition:transform .2s cubic-bezier(.2,.8,.2,1), box-shadow .2s ease;
+  box-shadow:0 16px 34px -16px rgba(214,80,47,0.65);
+}
+#roomSendBtn:hover{transform:translateY(-2px);box-shadow:0 20px 40px -14px rgba(214,80,47,0.75);}
+#roomSendBtn .send-arrow{transition:transform .25s cubic-bezier(.2,.8,.2,1);}
+#roomSendBtn:hover .send-arrow{transform:translateX(6px);}
+#roomSendBtn.sending{pointer-events:none;opacity:0.75;}
+
+.room-plane{
+  position:fixed;font-size:26px;z-index:9600;pointer-events:none;opacity:0;
+  transform:translate(-50%,-50%) rotate(0deg);
+}
+.room-plane.fly{
+  animation:planeFly 1.1s cubic-bezier(.3,.6,.3,1) forwards;
+}
+@keyframes planeFly{
+  0%{opacity:1;transform:translate(-50%,-50%) translate(0,0) rotate(0deg) scale(1);}
+  60%{opacity:1;transform:translate(-50%,-50%) translate(40vw,-24vh) rotate(18deg) scale(1.1);}
+  100%{opacity:0;transform:translate(-50%,-50%) translate(72vw,-44vh) rotate(24deg) scale(0.7);}
+}
+.room-plane.wobble{animation:planeWobble 1s ease forwards;}
+@keyframes planeWobble{
+  0%{opacity:1;transform:translate(-50%,-50%) translate(0,0) rotate(0deg);}
+  40%{opacity:1;transform:translate(-50%,-50%) translate(18vw,-8vh) rotate(10deg);}
+  70%{opacity:1;transform:translate(-50%,-50%) translate(6vw,-2vh) rotate(-6deg);}
+  100%{opacity:1;transform:translate(-50%,-50%) translate(0,0) rotate(0deg);}
+}
+@media (prefers-reduced-motion: reduce){
+  .room-plane.fly, .room-plane.wobble{animation:none;opacity:0;}
+}
+
+.room-status-view{display:none;text-align:center;max-width:480px;margin:20px auto 0;padding:30px 10px;}
+.room-status-view.show{display:block;}
+.room-status-view h3{font-family:'Fredoka';font-size:28px;color:var(--room-text);}
+.room-status-view p{color:var(--room-text-soft);margin-top:12px;font-size:14.5px;}
+.room-status-view .room-btn{margin-top:22px;}
+
+.room-doodle-note{
+  font-family:'Caveat';font-size:16px;color:var(--room-text-soft);text-align:center;
+  margin-top:70px;opacity:0.8;
+}
+
+@media (max-width:600px){
+  .choice-grid{grid-template-columns:repeat(2,1fr);}
+  .why-grid{grid-template-columns:repeat(2,1fr);}
+}
 </style>
 </head>
 <body>
@@ -488,7 +769,7 @@ footer .totop{display:inline-block;margin-top:16px;font-size:13px;font-weight:70
     <div class="rp-actions">
       <a href="#work" class="btn btn-ghost">Projects</a>
       <a href="#resume" class="btn btn-ghost">Resume</a>
-      <a href="#contact" class="btn btn-primary">Contact</a>
+      <a href="#contact" class="btn btn-primary" data-hire-trigger>Contact</a>
     </div>
   </div>
 </div>
@@ -503,7 +784,7 @@ footer .totop{display:inline-block;margin-top:16px;font-size:13px;font-weight:70
       <a class="nav-link" href="#journey">Journey<span class="nav-doodle">〰️</span></a>
       <a class="nav-link" href="#contact">Contact<span class="nav-doodle">✈️</span></a>
     </div>
-    <a href="#contact" class="btn btn-primary nav-cta magnetic" style="padding:10px 20px;font-size:13.5px;">Let's talk</a>
+    <a href="#contact" class="btn btn-primary nav-cta magnetic" style="padding:10px 20px;font-size:13.5px;" data-hire-trigger>Let's talk</a>
     <button class="nav-toggle btn-ghost" id="navToggle" aria-expanded="false" aria-controls="mobileMenu" aria-label="Open menu">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
     </button>
@@ -612,7 +893,7 @@ footer .totop{display:inline-block;margin-top:16px;font-size:13px;font-weight:70
       <div class="ql-actions">
         <a href="#work">View projects</a>
         <a href="#resume">Resume</a>
-        <a href="#contact">Contact</a>
+        <a href="#contact" data-hire-trigger>Contact</a>
       </div>
     </div>
   </div>
@@ -937,35 +1218,181 @@ footer .totop{display:inline-block;margin-top:16px;font-size:13px;font-weight:70
 
 <section class="section" id="contact">
   <div class="wrap">
-    <div class="contact-inner reveal">
+    <div class="hire-launchpad reveal">
       <h2>So... what are<br>we building?</h2>
-      <p>I'm always interested in good problems, interesting ideas, internships, freelance work, collaborations, and things worth learning.</p>
-      <div class="contact-actions">
-        <a href="mailto:hello@bibekbista.dev" class="btn btn-primary magnetic">Email me ✈</a>
-        <a href="https://github.com/bibekbista0405" target="_blank" rel="noopener" class="btn btn-secondary magnetic">View GitHub</a>
+      <p class="hl-sub">Recruiter, founder, or just curious? Step into the hiring room — a different way to see what I can offer.</p>
+      <button type="button" id="hireTriggerBtn" data-hire-trigger>
+        🚪 HIRE ME <span class="hl-arrow">→</span>
+      </button>
+      <div class="hl-alt">
+        <a href="mailto:hello@bibekbista.dev">Or just email me</a>
+        <a href="https://github.com/bibekbista0405" target="_blank" rel="noopener">View GitHub</a>
       </div>
-
-      <form class="contact-form" id="contactForm">
-        <div>
-          <label for="cf-name">Name</label>
-          <input id="cf-name" name="name" type="text" placeholder="Your name" required>
-        </div>
-        <div>
-          <label for="cf-email">Email</label>
-          <input id="cf-email" name="email" type="email" placeholder="you@example.com" required>
-        </div>
-        <div>
-          <label for="cf-message">Message</label>
-          <textarea id="cf-message" name="message" rows="4" placeholder="What are we building?" required></textarea>
-        </div>
-        <button type="submit" class="btn btn-primary">Send it ✈</button>
-        <p class="form-status" id="formStatus" aria-live="polite"></p>
-      </form>
+      <noscript><p class="hl-noscript">JavaScript is off, so here's the plain version: email hello@bibekbista.dev or view the résumé in the Journey section above.</p></noscript>
     </div>
   </div>
 </section>
 
 </main>
+
+<div id="hireRipple" aria-hidden="true"></div>
+<div class="room-plane" id="roomPlane" aria-hidden="true">✈️</div>
+
+<div id="hiringRoom" role="dialog" aria-modal="true" aria-labelledby="hiringRoomTitle" aria-hidden="true">
+  <div class="room-bg-glow" aria-hidden="true"><span class="g1"></span><span class="g2"></span><span class="g3"></span></div>
+
+  <div class="room-topbar">
+    <button type="button" id="roomBack">← Back to portfolio</button>
+    <span class="room-status-chip"><span class="pulse" aria-hidden="true"></span> Open to opportunities</span>
+  </div>
+
+  <div class="room-wrap">
+
+    <div class="room-hero">
+      <div>
+        <p class="room-eyebrow hand">Welcome to</p>
+        <h1 class="room-title" id="hiringRoomTitle">HIRE <span class="accent">BIBEK</span>.</h1>
+        <p class="room-sub" id="roomHeroSub">A creative recruitment desk, not a contact form. Pick what brings you here.</p>
+        <span class="room-sticky hand">Currently building something.</span>
+        <p class="room-doodle-arrow hand">↳ psst, the projects are worth a look</p>
+      </div>
+      <div class="portrait-card">
+        <div class="pc-tape" aria-hidden="true"></div>
+        <img id="roomPortrait" alt="Photo of Bibek Bista, smiling">
+        <p class="pc-name">Bibek Bista</p>
+        <p class="pc-role">Student Developer<br>Full Stack Developer<br>Cybersecurity Learner</p>
+      </div>
+    </div>
+
+    <div class="room-section">
+      <h2 class="room-h2"><small>So...</small>What are we building?</h2>
+      <div class="choice-grid" id="choiceGrid" role="group" aria-label="What brings you here">
+        <button type="button" class="choice-card" data-choice="role"><span class="cc-icon">📄</span><span class="cc-label">I'm hiring for a role</span></button>
+        <button type="button" class="choice-card" data-choice="internship"><span class="cc-icon">🗂️</span><span class="cc-label">I have an internship</span></button>
+        <button type="button" class="choice-card" data-choice="project"><span class="cc-icon">🪟</span><span class="cc-label">I have a project</span></button>
+        <button type="button" class="choice-card" data-choice="collab"><span class="cc-icon">🔗</span><span class="cc-label">I want to collaborate</span></button>
+        <button type="button" class="choice-card" data-choice="talk"><span class="cc-icon">💬</span><span class="cc-label">I just want to talk</span></button>
+      </div>
+      <div class="room-response" id="roomResponse"></div>
+    </div>
+
+    <div class="room-section">
+      <h2 class="room-h2"><small>Currently interested in</small>What I'm looking to work on</h2>
+      <div class="room-pillrow">
+        <span class="room-pill">Software Development</span>
+        <span class="room-pill">Full Stack Development</span>
+        <span class="room-pill">Web Development</span>
+        <span class="room-pill">UI/UX</span>
+        <span class="room-pill">Cybersecurity-related learning</span>
+        <span class="room-pill">AI / emerging tech</span>
+        <span class="room-pill">Freelance development</span>
+      </div>
+    </div>
+
+    <div class="room-section">
+      <h2 class="room-h2"><small>Why Bibek?</small>Tap one to find out</h2>
+      <div class="why-grid" id="whyGrid">
+        <div class="why-tile" data-why="build"><span class="wt-label">BUILD</span></div>
+        <div class="why-tile" data-why="learn"><span class="wt-label">LEARN</span></div>
+        <div class="why-tile" data-why="solve"><span class="wt-label">SOLVE</span></div>
+        <div class="why-tile" data-why="create"><span class="wt-label">CREATE</span></div>
+        <div class="why-tile" data-why="adapt"><span class="wt-label">ADAPT</span></div>
+        <div class="why-panel" id="whyPanel"></div>
+      </div>
+    </div>
+
+    <div class="room-section">
+      <h2 class="room-h2"><small>Don't take my word for it</small>A few things I've actually built</h2>
+      <div class="proof-grid">
+        <button type="button" class="proof-card" data-proof="dash">
+          <h4>DASH</h4><p class="pc-tagline">Privacy-first desktop browser</p>
+          <div class="proof-detail">A desktop browser built to put user control front and center — renderer → Electron → IPC → services → SQLite.<div class="pd-tags"><span class="tag">Electron</span><span class="tag">React</span><span class="tag">TypeScript</span><span class="tag">SQLite</span></div></div>
+        </button>
+        <button type="button" class="proof-card" data-proof="ink">
+          <h4>INK</h4><p class="pc-tagline">Social platform</p>
+          <div class="proof-detail">"I Need To Know" — a social platform with registration, login, username verification, and a full frontend/backend split.<div class="pd-tags"><span class="tag">React</span><span class="tag">Node.js</span><span class="tag">Firebase</span></div></div>
+        </button>
+        <button type="button" class="proof-card" data-proof="linkup">
+          <h4>LinkUp</h4><p class="pc-tagline">Communication / chat platform</p>
+          <div class="proof-detail">What if a website felt like your phone? Friend requests, chat, notifications, and calling — prototype-level features labeled clearly where still in progress.<div class="pd-tags"><span class="tag">Realtime</span><span class="tag">Auth</span><span class="tag">Chat</span></div></div>
+        </button>
+        <button type="button" class="proof-card" data-proof="ai">
+          <h4>AI Assistant</h4><p class="pc-tagline">AI conversation / interface exploration</p>
+          <div class="proof-detail">An experimental concept exploring natural conversation, voice interaction and expressive interfaces. Curiosity-driven, not a finished product.<div class="pd-tags"><span class="tag">AI/UX</span><span class="tag">Prototype</span></div></div>
+        </button>
+      </div>
+    </div>
+
+    <div class="room-twocol">
+      <div class="room-card">
+        <h3>Résumé</h3>
+        <p style="color:var(--room-text-soft);font-size:13.5px;margin-top:6px;">A recruiter should never have to hunt for this.</p>
+        <div class="room-btn-row">
+          <a href="#" class="room-btn primary" id="roomViewResume">View résumé</a>
+          <a href="#" class="room-btn" id="roomDownloadResume">Download résumé</a>
+        </div>
+        <p class="room-status-note" id="roomResumeStatus" aria-live="polite"></p>
+      </div>
+      <div class="room-card">
+        <h3>Availability</h3>
+        <p style="color:var(--sage);font-size:13.5px;font-weight:600;margin-top:6px;">● Open to opportunities</p>
+        <div class="room-pillrow" style="justify-content:flex-start;margin-top:14px;">
+          <span class="room-pill">Internships</span>
+          <span class="room-pill">Entry-level software development</span>
+          <span class="room-pill">Freelance projects</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="room-section room-contact">
+      <h2 class="room-h2">Let's start something.</h2>
+      <form class="room-form" id="roomForm" novalidate>
+        <div class="room-field">
+          <label for="rf-name">Name</label>
+          <input id="rf-name" name="name" type="text" placeholder="Your name" required>
+        </div>
+        <div class="room-field">
+          <label for="rf-email">Email</label>
+          <input id="rf-email" name="email" type="email" placeholder="you@example.com" required>
+        </div>
+        <div class="room-field">
+          <label for="rf-company">Company / organization <span style="text-transform:none;font-weight:400;">(optional)</span></label>
+          <input id="rf-company" name="company" type="text" placeholder="Where you're calling from">
+        </div>
+        <div class="room-field">
+          <label for="rf-lookingfor">What are you looking for?</label>
+          <select id="rf-lookingfor" name="lookingFor">
+            <option value="A role">Hiring for a role</option>
+            <option value="An internship">An internship</option>
+            <option value="A project">A project</option>
+            <option value="A collaboration">A collaboration</option>
+            <option value="Just talking">Just talking</option>
+          </select>
+        </div>
+        <div class="room-field">
+          <label for="rf-message">Message</label>
+          <textarea id="rf-message" name="message" placeholder="Tell me what you're building, hiring for, or thinking about..." required></textarea>
+          <span class="pencil-doodle" id="pencilDoodle" aria-hidden="true">✏️</span>
+        </div>
+        <button type="submit" id="roomSendBtn">Send it <span class="send-arrow">→</span></button>
+      </form>
+
+      <div class="room-status-view" id="roomSuccess">
+        <h3>Message delivered.</h3>
+        <p>Thanks for reaching out. I'll get back to you as soon as possible.</p>
+        <button type="button" class="room-btn primary" id="roomBackFromSuccess">← Back to portfolio</button>
+      </div>
+
+      <div class="room-status-view" id="roomError">
+        <h3>That didn't go through.</h3>
+        <p>Something interrupted the message. No harm done — try again whenever you're ready.</p>
+        <button type="button" class="room-btn primary" id="roomRetryBtn">Try again</button>
+      </div>
+    </div>
+
+    <p class="room-doodle-note hand">Learn → Build → Break → Fix → Repeat</p>
+  </div>
+</div>
 
 <footer>
   <p class="hand">"Built with curiosity, code, and a suspicious amount of coffee."</p>
@@ -1146,19 +1573,6 @@ footer .totop{display:inline-block;margin-top:16px;font-size:13px;font-weight:70
     fill.style.width = cur + '%'; head.style.left = cur + '%'; head.setAttribute('aria-valuenow', cur);
   });
 
-  var form = document.getElementById('contactForm');
-  var status = document.getElementById('formStatus');
-  form.addEventListener('submit', function(e){
-    e.preventDefault();
-    var name = document.getElementById('cf-name').value;
-    var email = document.getElementById('cf-email').value;
-    var msg = document.getElementById('cf-message').value;
-    var subject = encodeURIComponent('Portfolio message from ' + name);
-    var body = encodeURIComponent(msg + '\n\n— ' + name + ' (' + email + ')');
-    window.location.href = 'mailto:hello@bibekbista.dev?subject=' + subject + '&body=' + body;
-    status.textContent = 'Opening your email app — hopefully it doesn\'t get lost in the internet.';
-  });
-
   var resumeStatus = document.getElementById('resumeStatus');
   document.getElementById('viewResumeBtn').addEventListener('click', function(e){
     e.preventDefault();
@@ -1233,6 +1647,308 @@ footer .totop{display:inline-block;margin-top:16px;font-size:13px;font-weight:70
     }
   } else {
     document.querySelectorAll('.reveal').forEach(function(el){ el.classList.add('in'); });
+  }
+})();
+</script>
+
+<script>
+/* ======================================================================
+   HIRING ROOM — behaviour
+   Only touches: [data-hire-trigger] elements, #hiringRoom and its children,
+   #hireRipple, #roomPlane. Nothing else on the page is modified.
+   ====================================================================== */
+(function(){
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  var room = document.getElementById('hiringRoom');
+  var ripple = document.getElementById('hireRipple');
+  var plane = document.getElementById('roomPlane');
+  var roomBack = document.getElementById('roomBack');
+  var roomTitleEl = document.getElementById('hiringRoomTitle');
+  var roomSubEl = document.getElementById('roomHeroSub');
+  var responseEl = document.getElementById('roomResponse');
+  var whyPanel = document.getElementById('whyPanel');
+  var roomForm = document.getElementById('roomForm');
+  var roomSendBtn = document.getElementById('roomSendBtn');
+  var roomSuccess = document.getElementById('roomSuccess');
+  var roomError = document.getElementById('roomError');
+  var roomResumeStatus = document.getElementById('roomResumeStatus');
+  var pencil = document.getElementById('pencilDoodle');
+  var messageField = document.getElementById('rf-message');
+
+  if(!room || !ripple) return;
+
+  var lastFocused = null;
+  var lastOrigin = {x: window.innerWidth/2, y: window.innerHeight/2};
+  var DEFAULT_TITLE = 'HIRE <span class="accent">BIBEK</span>.';
+  var DEFAULT_SUB = 'A creative recruitment desk, not a contact form. Pick what brings you here.';
+
+  var choiceCopy = {
+    role:        {title:"Let's talk about the role.",       body:"Tell me what you're hiring for below, and I'll write back with where my experience actually fits.", lf:'A role'},
+    internship:  {title:"Let's talk about the opportunity.", body:"I'm actively looking for internships where I can learn fast and contribute. Add the details below.", lf:'An internship'},
+    project:     {title:"Let's scope the project.",          body:"Freelance or one-off builds are welcome — share the brief in the message below.", lf:'A project'},
+    collab:      {title:"Let's connect the dots.",           body:"Always up for building something together. What are you working on?", lf:'A collaboration'},
+    talk:        {title:"Let's just talk.",                  body:"No agenda needed — drop a note below and I'll write back.", lf:'Just talking'}
+  };
+  var whyCopy = {
+    build:  "Real-world web applications, not just tutorials.",
+    learn:  "Continuously exploring software engineering, cybersecurity and AI.",
+    solve:  "Hands-on experience with APIs, authentication, deployment, and the everyday problems that come with shipping something.",
+    create: "Interested in UI/UX and creative digital experiences — not just making things work, but making them feel good.",
+    adapt:  "Comfortable picking up new stacks and briefs quickly, from client work to solo experiments."
+  };
+
+  function resetRoomState(){
+    document.querySelectorAll('.choice-card').forEach(function(c){ c.classList.remove('chosen'); });
+    if(responseEl){ responseEl.classList.remove('show'); responseEl.textContent = ''; }
+    document.querySelectorAll('.why-tile').forEach(function(t){ t.classList.remove('open'); });
+    if(whyPanel){ whyPanel.classList.remove('show'); whyPanel.textContent = ''; }
+    document.querySelectorAll('.proof-card').forEach(function(c){ c.classList.remove('open'); });
+    if(roomTitleEl) roomTitleEl.innerHTML = DEFAULT_TITLE;
+    if(roomSubEl) roomSubEl.textContent = DEFAULT_SUB;
+    if(roomForm){ roomForm.style.display = ''; roomForm.reset(); }
+    if(roomSuccess) roomSuccess.classList.remove('show');
+    if(roomError) roomError.classList.remove('show');
+    if(roomSendBtn) roomSendBtn.classList.remove('sending');
+    if(pencil) pencil.classList.remove('active');
+  }
+
+  function trapTab(e){
+    if(e.key !== 'Tab') return;
+    var focusables = room.querySelectorAll('button, a[href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+    if(!focusables.length) return;
+    var first = focusables[0], last = focusables[focusables.length - 1];
+    if(e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
+    else if(!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
+  }
+
+  function openRoom(e){
+    e.preventDefault();
+    if(room.classList.contains('visible')) return;
+    lastFocused = document.activeElement;
+
+    var rect = e.currentTarget.getBoundingClientRect();
+    lastOrigin = {x: rect.left + rect.width / 2, y: rect.top + rect.height / 2};
+    ripple.style.left = lastOrigin.x + 'px';
+    ripple.style.top = lastOrigin.y + 'px';
+
+    var portraitImg = document.querySelector('.photo-tape-wrap img');
+    var roomPortrait = document.getElementById('roomPortrait');
+    if(portraitImg && roomPortrait && !roomPortrait.getAttribute('src')){
+      roomPortrait.src = portraitImg.src;
+    }
+
+    document.documentElement.style.overflow = 'hidden';
+
+    function reveal(){
+      room.classList.add('visible');
+      room.setAttribute('aria-hidden', 'false');
+      ripple.classList.remove('launch');
+      ripple.style.opacity = '0';
+      ripple.style.width = '';
+      ripple.style.height = '';
+      roomBack.focus();
+    }
+
+    if(reduced){
+      reveal();
+      return;
+    }
+    ripple.classList.remove('retract');
+    ripple.style.width = '';
+    ripple.style.height = '';
+    ripple.style.opacity = '1';
+    void ripple.offsetWidth;
+    ripple.classList.add('launch');
+    ripple.addEventListener('animationend', function handler(){
+      ripple.removeEventListener('animationend', handler);
+      reveal();
+    }, {once:true});
+  }
+
+  function closeRoom(){
+    if(!room.classList.contains('visible')) return;
+    ripple.style.left = lastOrigin.x + 'px';
+    ripple.style.top = lastOrigin.y + 'px';
+
+    function finishClose(){
+      document.documentElement.style.overflow = '';
+      resetRoomState();
+      if(lastFocused && lastFocused.focus) lastFocused.focus();
+    }
+
+    if(reduced){
+      room.classList.remove('visible');
+      room.setAttribute('aria-hidden', 'true');
+      finishClose();
+      return;
+    }
+
+    ripple.style.width = '340vmax';
+    ripple.style.height = '340vmax';
+    ripple.style.opacity = '1';
+    void ripple.offsetWidth;
+
+    room.classList.remove('visible');
+    room.setAttribute('aria-hidden', 'true');
+    document.documentElement.style.overflow = '';
+
+    ripple.classList.add('retract');
+    ripple.addEventListener('animationend', function handler(){
+      ripple.removeEventListener('animationend', handler);
+      ripple.classList.remove('retract');
+      ripple.style.width = '';
+      ripple.style.height = '';
+      ripple.style.opacity = '0';
+      resetRoomState();
+      if(lastFocused && lastFocused.focus) lastFocused.focus();
+    }, {once:true});
+  }
+
+  document.querySelectorAll('[data-hire-trigger]').forEach(function(el){
+    el.addEventListener('click', openRoom);
+  });
+  roomBack.addEventListener('click', closeRoom);
+  room.addEventListener('keydown', trapTab);
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape' && room.classList.contains('visible')) closeRoom();
+  });
+
+  /* choice cards */
+  document.querySelectorAll('.choice-card').forEach(function(card){
+    card.addEventListener('click', function(){
+      document.querySelectorAll('.choice-card').forEach(function(c){ c.classList.remove('chosen'); });
+      card.classList.add('chosen');
+      var copy = choiceCopy[card.getAttribute('data-choice')];
+      if(!copy) return;
+      roomTitleEl.textContent = copy.title;
+      roomSubEl.textContent = 'Scroll down for why, what I\'ve built, and how to reach me.';
+      responseEl.textContent = copy.body;
+      responseEl.classList.add('show');
+      var lf = document.getElementById('rf-lookingfor');
+      if(lf) lf.value = copy.lf;
+    });
+  });
+
+  /* why bibek tiles */
+  document.querySelectorAll('.why-tile').forEach(function(tile){
+    tile.setAttribute('tabindex', '0');
+    tile.setAttribute('role', 'button');
+    function toggle(){
+      var wasOpen = tile.classList.contains('open');
+      document.querySelectorAll('.why-tile').forEach(function(t){ t.classList.remove('open'); });
+      if(!wasOpen){
+        tile.classList.add('open');
+        whyPanel.textContent = whyCopy[tile.getAttribute('data-why')] || '';
+        whyPanel.classList.add('show');
+      } else {
+        whyPanel.classList.remove('show');
+      }
+    }
+    tile.addEventListener('click', toggle);
+    tile.addEventListener('keydown', function(e){
+      if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); toggle(); }
+    });
+  });
+
+  /* project proof cards */
+  document.querySelectorAll('.proof-card').forEach(function(card){
+    card.addEventListener('click', function(){
+      var wasOpen = card.classList.contains('open');
+      document.querySelectorAll('.proof-card').forEach(function(c){ c.classList.remove('open'); });
+      if(!wasOpen) card.classList.add('open');
+    });
+  });
+
+  /* resume links (same behaviour as the main portfolio's résumé buttons) */
+  var roomViewResume = document.getElementById('roomViewResume');
+  var roomDownloadResume = document.getElementById('roomDownloadResume');
+  if(roomViewResume) roomViewResume.addEventListener('click', function(e){
+    e.preventDefault();
+    roomResumeStatus.textContent = 'Resume PDF link goes here — add it once it\'s ready.';
+  });
+  if(roomDownloadResume) roomDownloadResume.addEventListener('click', function(e){
+    e.preventDefault();
+    roomResumeStatus.textContent = 'Resume download link goes here — add it once it\'s ready.';
+  });
+
+  /* the message field gets a tiny illustrated reaction while typing */
+  if(messageField){
+    messageField.addEventListener('input', function(){
+      pencil.classList.toggle('active', messageField.value.length > 0);
+    });
+  }
+
+  /* send flow: real mailto submission, paper-airplane feedback, honest success/error states */
+  function launchPlane(isError, cb){
+    if(reduced){ cb(); return; }
+    var btnRect = roomSendBtn.getBoundingClientRect();
+    plane.style.left = (btnRect.left + btnRect.width / 2) + 'px';
+    plane.style.top = (btnRect.top + btnRect.height / 2) + 'px';
+    plane.classList.remove('fly', 'wobble');
+    void plane.offsetWidth;
+    plane.classList.add(isError ? 'wobble' : 'fly');
+    plane.addEventListener('animationend', function handler(){
+      plane.removeEventListener('animationend', handler);
+      cb();
+    }, {once:true});
+  }
+
+  if(roomForm){
+    roomForm.addEventListener('submit', function(e){
+      e.preventDefault();
+      if(!roomForm.checkValidity()){ roomForm.reportValidity(); return; }
+      var name = document.getElementById('rf-name').value;
+      var email = document.getElementById('rf-email').value;
+      var company = document.getElementById('rf-company').value;
+      var lookingFor = document.getElementById('rf-lookingfor').value;
+      var msg = document.getElementById('rf-message').value;
+      roomSendBtn.classList.add('sending');
+      try {
+        var subject = encodeURIComponent('Portfolio message from ' + name + ' — ' + lookingFor);
+        var lines = [msg, ''];
+        if(company) lines.push('Company/organization: ' + company);
+        lines.push('— ' + name + ' (' + email + ')');
+        var body = encodeURIComponent(lines.join('\n'));
+        window.location.href = 'mailto:hello@bibekbista.dev?subject=' + subject + '&body=' + body;
+        launchPlane(false, function(){
+          roomSendBtn.classList.remove('sending');
+          roomForm.style.display = 'none';
+          roomSuccess.classList.add('show');
+          roomSuccess.querySelector('.room-btn').focus();
+        });
+      } catch(err){
+        launchPlane(true, function(){
+          roomSendBtn.classList.remove('sending');
+          roomForm.style.display = 'none';
+          roomError.classList.add('show');
+          roomError.querySelector('.room-btn').focus();
+        });
+      }
+    });
+  }
+
+  var roomRetryBtn = document.getElementById('roomRetryBtn');
+  if(roomRetryBtn) roomRetryBtn.addEventListener('click', function(){
+    roomError.classList.remove('show');
+    roomForm.style.display = '';
+    document.getElementById('rf-name').focus();
+  });
+
+  var roomBackFromSuccess = document.getElementById('roomBackFromSuccess');
+  if(roomBackFromSuccess) roomBackFromSuccess.addEventListener('click', closeRoom);
+
+  /* subtle desktop-only portrait parallax */
+  if(!reduced && window.matchMedia('(hover:hover) and (pointer:fine)').matches){
+    var portraitCard = document.querySelector('.portrait-card');
+    if(portraitCard){
+      room.addEventListener('mousemove', function(e){
+        var r = room.getBoundingClientRect();
+        var relX = (e.clientX - r.width / 2) / r.width;
+        var relY = (e.clientY - r.height / 2) / r.height;
+        portraitCard.style.transform = 'rotate(2deg) translate(' + (relX * 12).toFixed(1) + 'px,' + (relY * 12).toFixed(1) + 'px)';
+      });
+    }
   }
 })();
 </script>

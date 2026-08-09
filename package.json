@@ -1,0 +1,17 @@
+{
+  "name": "bibek-bista-portfolio",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Bibek Bista's portfolio site with a real Hire Me contact form (Vercel serverless function + Resend).",
+  "scripts": {
+    "dev": "node dev-server.js",
+    "build": "echo \"Static site \u2014 no build step required.\"",
+    "deploy": "vercel --prod"
+  },
+  "dependencies": {
+    "resend": "^4.0.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

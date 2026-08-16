@@ -687,11 +687,75 @@ a:focus-visible, button:focus-visible, summary:focus-visible{
 .contact-form label{font-size:13px;color:#D9CFC0;font-weight:600;}
 .form-status{font-size:13.5px;color:var(--gold);min-height:18px;}
 
-/* FOOTER */
-footer{padding:44px 0;text-align:center;}
-footer .hand{font-size:20px;color:var(--ink-soft);}
-footer .fmeta{font-size:13px;color:var(--ink-soft);margin-top:10px;}
-footer .totop{display:inline-block;margin-top:16px;font-size:13px;font-weight:700;color:var(--coral-dark);}
+/* FOOTER — "reached the bottom" surprise */
+footer{padding:70px 0 50px;text-align:center;position:relative;overflow:hidden;}
+.footer-end{position:relative;max-width:520px;margin:0 auto;}
+.footer-end-line{width:180px;height:12px;margin:0 auto 28px;color:var(--line);overflow:visible;}
+.footer-end-line path{stroke-dasharray:220;stroke-dashoffset:220;transition:stroke-dashoffset 1.1s cubic-bezier(.2,.8,.2,1) .1s;}
+.footer-end-line.in path{stroke-dashoffset:0;}
+
+.footer-end-doodle{position:absolute;font-family:'Caveat';color:var(--ink-soft);opacity:0;pointer-events:none;}
+.fed-1{top:6px;left:2%;font-size:24px;color:var(--gold);transform:rotate(-10deg);}
+.fed-2{top:60px;right:4%;font-size:22px;transform:rotate(6deg);}
+.fed-3{bottom:120px;left:6%;font-size:20px;transform:rotate(-6deg);}
+.footer-end-doodle.in, .footer-end .footer-end-doodle.in{opacity:.55;}
+@media (max-width:600px){.footer-end-doodle{display:none;}}
+
+.footer-end-tag{
+  font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--ink-soft);margin-bottom:10px;
+}
+.footer-end-msg{font-family:'Fredoka';font-weight:700;font-size:26px;color:var(--ink);margin-bottom:8px;}
+.footer-end-sub{font-size:14.5px;color:var(--ink-soft);max-width:340px;margin:0 auto 6px;}
+.footer-end-sign{font-size:22px;color:var(--coral-dark);margin-bottom:30px;}
+
+footer .hand{font-size:19px;color:var(--ink-soft);}
+.footer-end-actions{display:flex;flex-wrap:wrap;justify-content:center;gap:14px;margin-top:26px;}
+
+/* footer action tiles — a small, distinct showcase, deliberately different
+   from the pill-buttons used everywhere else on the site */
+.fea-tile{
+  display:flex;flex-direction:column;align-items:center;gap:9px;width:84px;padding:16px 10px 14px;
+  background:rgba(255,253,248,0.6);border:1px solid var(--line);border-radius:var(--radius-md);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  box-shadow:0 12px 28px -18px rgba(42,37,33,0.35);
+  transition:box-shadow .3s ease, border-color .3s ease, background .3s ease;
+}
+.fea-tile:hover, .fea-tile:focus-visible{
+  background:rgba(255,253,248,0.92);box-shadow:0 20px 40px -18px rgba(42,37,33,0.45);
+}
+.fea-tile:focus-visible{outline:2px solid var(--gold);outline-offset:3px;}
+.fea-icon{
+  width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  background:var(--cream-2);color:var(--ink);transition:transform .3s ease, background .3s ease, color .3s ease;
+}
+.fea-tile:hover .fea-icon{transform:scale(1.08) rotate(-4deg);}
+.fea-label{font-size:11.5px;font-weight:700;color:var(--ink-soft);transition:color .25s ease;}
+.fea-tile:hover .fea-label{color:var(--ink);}
+
+.fea-resume:hover .fea-icon{background:#FDEBD9;color:#9A5C1A;}
+.fea-hire:hover .fea-icon{background:var(--coral);color:var(--paper);}
+.fea-gh:hover .fea-icon{background:var(--ink);color:var(--cream);}
+.fea-li:hover .fea-icon{background:#DCEAF2;color:var(--sky-deep);}
+
+@media (max-width:480px){
+  .footer-end-actions{gap:10px;}
+  .fea-tile{width:74px;padding:13px 6px 11px;}
+  .fea-icon{width:34px;height:34px;}
+  .fea-label{font-size:10.5px;}
+}
+
+footer .fmeta{font-size:13px;color:var(--ink-soft);margin-top:26px;}
+footer .totop{
+  display:inline-flex;align-items:center;gap:6px;margin-top:14px;font-size:13px;font-weight:700;
+  color:var(--coral-dark);padding:6px 4px;
+}
+.totop-arrow{display:inline-block;transition:transform .3s cubic-bezier(.34,1.56,.64,1);}
+footer .totop:hover .totop-arrow{transform:translateY(-4px);}
+@media (prefers-reduced-motion: reduce){
+  .footer-end-line path{transition:none;}
+  .totop-arrow{transition:none;}
+}
 
 /* tiny footer easter egg */
 .footer-hand-line{cursor:pointer;position:relative;display:inline-block;}
@@ -768,24 +832,85 @@ footer .totop{display:inline-block;margin-top:16px;font-size:13px;font-weight:70
 }
 #recruiterFab:hover{transform:translateY(-3px) rotate(-1deg);}
 @media (max-width:600px){#recruiterFab span.long{display:none;}}
+
 #recruiterPanel{
-  position:fixed;inset:0;z-index:700;display:none;align-items:center;justify-content:center;
-  background:rgba(42,37,33,0.4);backdrop-filter:blur(3px);padding:20px;
+  position:fixed;inset:0;z-index:700;display:flex;align-items:center;justify-content:center;padding:20px;
+  background:rgba(42,37,33,0.5);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
+  opacity:0;visibility:hidden;pointer-events:none;
+  transition:opacity .35s ease, visibility 0s linear .35s;
 }
-#recruiterPanel.open{display:flex;}
+#recruiterPanel.open{opacity:1;visibility:visible;pointer-events:auto;transition:opacity .35s ease, visibility 0s linear 0s;}
+
+.rp-stack{position:relative;width:min(460px,100%);}
+.rp-paper-behind{
+  position:absolute;inset:0;background:var(--paper);border:1px solid var(--line);border-radius:var(--radius-lg);
+  opacity:0;transition:opacity .35s ease, transform .6s cubic-bezier(.2,.85,.25,1.15);
+}
+.rp-paper-behind.p1{transform:rotate(0deg) translateY(0);transition-delay:.06s;}
+.rp-paper-behind.p2{transform:rotate(0deg) translateY(0);transition-delay:0s;}
+#recruiterPanel.open .rp-paper-behind.p1{opacity:.65;transform:rotate(-6deg) translateY(10px);}
+#recruiterPanel.open .rp-paper-behind.p2{opacity:.4;transform:rotate(5deg) translateY(18px);}
+
 .rp-card{
-  width:min(440px,100%);background:var(--paper);border-radius:var(--radius-lg);
-  padding:32px;box-shadow:0 40px 80px -20px rgba(42,37,33,0.5);position:relative;
+  position:relative;z-index:2;width:100%;max-height:82vh;overflow-y:auto;
+  background:var(--paper);border-radius:var(--radius-lg);
+  padding:34px 30px;box-shadow:0 40px 80px -20px rgba(42,37,33,0.5);position:relative;
   border:1px solid var(--line);
+  transform:scale(.93) translateY(24px);opacity:0;
+  transition:transform .5s cubic-bezier(.2,.85,.22,1.2) .08s, opacity .3s ease .08s;
 }
-.rp-close{position:absolute;top:18px;right:18px;width:34px;height:34px;border-radius:50%;background:var(--cream-2);display:flex;align-items:center;justify-content:center;font-size:16px;}
-.rp-card h3{font-size:22px;}
-.rp-role{color:var(--ink-soft);font-size:13.5px;margin-top:4px;}
-.rp-row{display:flex;justify-content:space-between;gap:14px;padding:11px 0;border-bottom:1px dashed var(--line);font-size:13.5px;}
-.rp-row .k{color:var(--ink-soft);}
-.rp-row b{font-weight:700;text-align:right;}
-.rp-actions{display:flex;gap:10px;margin-top:20px;}
-.rp-actions a{flex:1;justify-content:center;padding:12px;font-size:13.5px;}
+#recruiterPanel.open .rp-card{transform:scale(1) translateY(0);opacity:1;}
+
+.rp-close{position:absolute;top:18px;right:18px;width:34px;height:34px;border-radius:50%;background:var(--cream-2);display:flex;align-items:center;justify-content:center;font-size:16px;z-index:2;}
+.rp-close:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+.rp-head{display:flex;align-items:center;gap:14px;padding-bottom:16px;border-bottom:1px dashed var(--line);}
+.rp-avatar{
+  width:56px;height:56px;border-radius:50%;object-fit:cover;flex-shrink:0;
+  border:2px solid var(--paper);box-shadow:0 0 0 2px var(--line), 0 8px 18px -8px rgba(42,37,33,0.4);
+  background:var(--cream-2);
+}
+.rp-kicker{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--coral-dark);margin-bottom:2px;}
+.rp-card h3{font-size:21px;font-family:'Fredoka';line-height:1.1;}
+.rp-role{color:var(--ink-soft);font-size:13px;margin-top:3px;}
+.rp-section{margin-top:18px;}
+.rp-section-num{
+  display:flex;align-items:center;gap:7px;font-size:11px;font-weight:700;letter-spacing:.08em;
+  color:var(--ink-soft);text-transform:uppercase;margin-bottom:8px;
+}
+.rp-num-icon{font-size:14px;filter:grayscale(0.15);}
+.rp-body{font-size:14px;color:var(--ink);line-height:1.55;}
+.rp-mini-label{font-size:11px;font-weight:700;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;}
+.rp-tag-row{display:flex;flex-wrap:wrap;gap:6px;}
+.rp-tag{font-size:11.5px;font-weight:600;padding:6px 11px;border-radius:100px;background:var(--cream-2);color:var(--ink-soft);}
+.rp-tag.building{background:#FDEBD9;color:#9A5C1A;}
+.rp-tag.exploring{background:#EAE4F3;color:#5F4A85;}
+.rp-direction{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.rp-dir-chip{
+  font-family:'Fredoka';font-weight:600;font-size:14px;color:var(--ink);
+  background:linear-gradient(135deg, var(--cream-2), var(--paper));border:1px solid var(--line);
+  padding:9px 16px;border-radius:10px;
+}
+.rp-dir-plus{color:var(--coral-dark);font-weight:700;font-size:16px;}
+.rp-status{font-size:13px;font-weight:600;color:var(--ink-soft);margin-top:20px;}
+.rp-actions{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;}
+.rp-actions a{flex:1;justify-content:center;padding:12px;font-size:13px;min-width:110px;}
+.rp-copy{
+  display:block;width:100%;margin-top:10px;padding:11px;text-align:center;
+  font-size:12.5px;font-weight:600;color:var(--ink-soft);background:none;border:1px dashed var(--line);
+  border-radius:100px;cursor:pointer;transition:color .2s ease, border-color .2s ease, background .2s ease;
+}
+.rp-copy:hover{color:var(--ink);border-color:var(--gold);background:var(--cream-2);}
+.rp-copy:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+.rp-copy.copied{color:var(--sage);border-color:var(--sage);border-style:solid;}
+@media (max-width:600px){
+  #recruiterPanel{padding:0;}
+  .rp-stack{max-width:100%;height:100%;}
+  .rp-paper-behind{display:none;}
+  .rp-card{max-height:100vh;height:100%;border-radius:0;}
+}
+@media (prefers-reduced-motion: reduce){
+  #recruiterPanel, .rp-card, .rp-paper-behind{transition:opacity .15s ease;}
+}
 
 /* PHOTO — real Bibek inside the illustrated desk world */
 .photo-tape-wrap{position:absolute;top:-6%;right:-4%;width:34%;max-width:150px;z-index:5;filter:drop-shadow(0 16px 26px rgba(42,37,33,0.28));}
@@ -958,21 +1083,25 @@ footer .totop{display:inline-block;margin-top:16px;font-size:13px;font-weight:70
 .room-hero{position:relative;display:grid;grid-template-columns:1.2fr 0.8fr;gap:40px;align-items:center;padding:30px 0 20px;}
 @media (max-width:760px){.room-hero{grid-template-columns:1fr;gap:24px;}}
 
-/* ink stamp — a little tactile "thud" the moment the room opens */
+/* ink stamp — a little tactile "thud" the moment the room opens.
+   Deliberately placed in the clear space above the eyebrow text, not on
+   top of the portrait card, so it's never occluded by the photo's own
+   background. */
 .hire-stamp{
-  position:absolute;top:-6px;right:16%;z-index:2;
-  width:104px;height:104px;border-radius:50%;
+  position:absolute;top:-30px;left:-6px;z-index:6;
+  width:96px;height:96px;border-radius:50%;
   border:3px solid var(--coral-dark);color:var(--coral-dark);
   display:flex;align-items:center;justify-content:center;text-align:center;
-  font-family:'Fredoka';font-weight:700;font-size:13px;line-height:1.2;letter-spacing:.02em;text-transform:uppercase;
+  font-family:'Fredoka';font-weight:700;font-size:12.5px;line-height:1.2;letter-spacing:.02em;text-transform:uppercase;
   transform:scale(2.4) rotate(-18deg);opacity:0;
   transition:transform .55s cubic-bezier(.2,.9,.24,1.35), opacity .3s ease;
   pointer-events:none;
-  box-shadow:inset 0 0 0 3px rgba(214,80,47,0.15);
-  mix-blend-mode:multiply;
+  box-shadow:inset 0 0 0 3px rgba(214,80,47,0.15), 0 10px 20px -10px rgba(0,0,0,0.5);
+  mix-blend-mode:normal;
+  background:rgba(20,17,14,0.35);
 }
-.hire-stamp.stamped{transform:scale(1) rotate(-9deg);opacity:0.88;}
-@media (max-width:900px){.hire-stamp{width:86px;height:86px;font-size:11px;right:6%;}}
+.hire-stamp.stamped{transform:scale(1) rotate(-11deg);opacity:0.92;}
+@media (max-width:900px){.hire-stamp{width:80px;height:80px;font-size:11px;top:-22px;left:-4px;}}
 @media (max-width:760px){.hire-stamp{display:none;}}
 @media (prefers-reduced-motion: reduce){.hire-stamp{transition:opacity .25s ease;}}
 .room-eyebrow{font-family:'Caveat';font-size:22px;color:var(--gold);transform:rotate(-2deg);display:inline-block;}
@@ -1635,20 +1764,68 @@ footer .totop{display:inline-block;margin-top:16px;font-size:13px;font-weight:70
 <button id="recruiterFab" type="button" aria-haspopup="dialog" aria-controls="recruiterPanel">
   🔎 <span class="long">Recruiter Quick View</span>
 </button>
-<div id="recruiterPanel" role="dialog" aria-modal="true" aria-label="Recruiter quick view">
-  <div class="rp-card">
-    <button class="rp-close" id="rpClose" aria-label="Close quick view">✕</button>
-    <h3>Bibek Bista</h3>
-    <p class="rp-role">Student Developer · Full Stack · Cybersecurity Learner</p>
-    <div class="rp-row"><span class="k">Location</span><b>Nepalgunj, Nepal</b></div>
-    <div class="rp-row"><span class="k">Education</span><b>Class 11, currently</b></div>
-    <div class="rp-row"><span class="k">Core stack</span><b>React, Node.js, TypeScript</b></div>
-    <div class="rp-row"><span class="k">Featured work</span><b>DASH, INK, LinkUp</b></div>
-    <div class="rp-row"><span class="k">Status</span><b>🟡 Open to internships</b></div>
-    <div class="rp-actions">
-      <a href="#work" class="btn btn-ghost">Projects</a>
-      <a href="#resume" class="btn btn-ghost">Resume</a>
-      <a href="#contact" class="btn btn-primary" data-hire-trigger>Contact</a>
+<div id="recruiterPanel" role="dialog" aria-modal="true" aria-label="Recruiter quick view" aria-hidden="true">
+  <div class="rp-stack">
+    <div class="rp-paper-behind p1" aria-hidden="true"></div>
+    <div class="rp-paper-behind p2" aria-hidden="true"></div>
+    <div class="rp-card">
+      <button class="rp-close" id="rpClose" aria-label="Close quick view">✕</button>
+      <div class="rp-head">
+        <img class="rp-avatar" id="rpAvatar" alt="Photo of Bibek Bista, smiling">
+        <div>
+          <p class="rp-kicker">Recruiter dossier</p>
+          <h3>Bibek Bista</h3>
+          <p class="rp-role">Student Developer · Full-Stack · Cybersecurity Learner</p>
+        </div>
+      </div>
+
+      <div class="rp-section">
+        <p class="rp-section-num"><span class="rp-num-icon" aria-hidden="true">🧑</span>01 — Who I am</p>
+        <p class="rp-body">A student developer from Nepal, building real-world applications while developing skills in software engineering, cybersecurity, and AI.</p>
+      </div>
+
+      <div class="rp-section">
+        <p class="rp-section-num"><span class="rp-num-icon" aria-hidden="true">🛠</span>02 — What I build</p>
+        <div class="rp-tag-row">
+          <span class="rp-tag">DASH — privacy-first desktop browser</span>
+          <span class="rp-tag">INK — social platform, live</span>
+          <span class="rp-tag">LinkUp — real-time chat, prototype</span>
+        </div>
+      </div>
+
+      <div class="rp-section">
+        <p class="rp-section-num"><span class="rp-num-icon" aria-hidden="true">⚡</span>03 — Core skills</p>
+        <p class="rp-mini-label">Building with</p>
+        <div class="rp-tag-row">
+          <span class="rp-tag building">React</span><span class="rp-tag building">Node.js</span><span class="rp-tag building">TypeScript</span><span class="rp-tag building">Firebase</span><span class="rp-tag building">Electron</span>
+        </div>
+        <p class="rp-mini-label" style="margin-top:12px;">Exploring</p>
+        <div class="rp-tag-row">
+          <span class="rp-tag exploring">Linux</span><span class="rp-tag exploring">Networking</span><span class="rp-tag exploring">Web security</span><span class="rp-tag exploring">Auth &amp; CORS</span>
+        </div>
+      </div>
+
+      <div class="rp-section">
+        <p class="rp-section-num"><span class="rp-num-icon" aria-hidden="true">🧭</span>04 — Current direction</p>
+        <div class="rp-direction">
+          <span class="rp-dir-chip">Cybersecurity</span>
+          <span class="rp-dir-plus">+</span>
+          <span class="rp-dir-chip">Software Engineering</span>
+        </div>
+      </div>
+
+      <div class="rp-section">
+        <p class="rp-section-num"><span class="rp-num-icon" aria-hidden="true">🎓</span>05 — Education</p>
+        <p class="rp-body">Class 11 · Shree Dhambhoji Sec. School, Nepalgunj, Banke</p>
+      </div>
+
+      <p class="rp-status">🟡 Open to internships</p>
+      <div class="rp-actions">
+        <a href="#work" class="btn btn-ghost">Projects</a>
+        <a href="/resume/Bibek-Bista-Resume.pdf" class="btn btn-ghost rv-trigger">Resume</a>
+        <a href="#contact" class="btn btn-primary" data-hire-trigger>Contact</a>
+      </div>
+      <button type="button" class="rp-copy" id="rpCopy">📋 Copy summary for later</button>
     </div>
   </div>
 </div>
@@ -2256,11 +2433,11 @@ footer .totop{display:inline-block;margin-top:16px;font-size:13px;font-weight:70
         🚪 HIRE ME <span class="hl-arrow">→</span>
       </button>
       <div class="hl-alt">
-        <a href="mailto:hello@bibekbista.dev">Or just email me</a>
+        <a href="mailto:bibekbista0405@gmail.com">Or just email me</a>
         <button type="button" class="hl-copy" data-copy-email data-cursor-label="Copy">Copy email</button>
         <a href="https://github.com/bibekbista0405" target="_blank" rel="noopener">View GitHub</a>
       </div>
-      <noscript><p class="hl-noscript">JavaScript is off, so here's the plain version: email hello@bibekbista.dev or view the résumé in the Journey section above.</p></noscript>
+      <noscript><p class="hl-noscript">JavaScript is off, so here's the plain version: email bibekbista0405@gmail.com or view the résumé in the Journey section above.</p></noscript>
     </div>
   </div>
 </section>
@@ -2482,7 +2659,7 @@ footer .totop{display:inline-block;margin-top:16px;font-size:13px;font-weight:70
         <p id="roomErrorNote">Something went wrong on my end. Your message wasn't lost — try again, or email me directly.</p>
         <div class="room-btn-row">
           <button type="button" class="room-btn primary" id="roomRetryBtn">Try again</button>
-          <a class="room-btn" href="mailto:hello@bibekbista.dev">Email directly</a>
+          <a class="room-btn" href="mailto:bibekbista0405@gmail.com">Email directly</a>
         </div>
       </div>
     </div>
@@ -2492,9 +2669,44 @@ footer .totop{display:inline-block;margin-top:16px;font-size:13px;font-weight:70
 </div>
 
 <footer>
-  <p class="hand footer-hand-line">"Built with curiosity, code, and a suspicious amount of coffee." <span class="egg-tip" aria-hidden="true">You found it — yes, really, too much coffee. ☕</span></p>
-  <p class="fmeta">Bibek Bista · Nepalgunj, Nepal · © 2026</p>
-  <a href="#top" class="totop">Back to top ↑</a>
+  <div class="footer-end wrap">
+    <svg class="footer-end-line reveal" viewBox="0 0 200 12" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M2 8c30-8 60-8 96-2s70 6 100-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+
+    <span class="footer-end-doodle fed-1 reveal" aria-hidden="true">✦</span>
+    <span class="footer-end-doodle fed-2 reveal" aria-hidden="true">〜</span>
+    <span class="footer-end-doodle fed-3 reveal" aria-hidden="true">✎</span>
+
+    <p class="footer-end-tag reveal">THE END?</p>
+    <p class="footer-end-msg reveal">You made it to the bottom.</p>
+    <p class="footer-end-sub reveal">Thanks for exploring my little corner of the internet.</p>
+    <p class="footer-end-sign hand reveal">— Bibek</p>
+
+    <p class="hand footer-hand-line reveal">"Built with curiosity, code, and a suspicious amount of coffee." <span class="egg-tip" aria-hidden="true">You found it — yes, really, too much coffee. ☕</span></p>
+
+    <div class="footer-end-actions reveal">
+      <a href="/resume/Bibek-Bista-Resume.pdf" class="fea-tile fea-resume rv-trigger magnetic" data-tilt="6" aria-label="View résumé">
+        <span class="fea-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M6 2h9l5 5v15a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1Zm8 1.5V8h4.5L14 3.5ZM8 12h8v1.5H8V12Zm0 4h8v1.5H8V16Zm0-8h4v1.5H8V8Z"/></svg></span>
+        <span class="fea-label">Résumé</span>
+      </a>
+      <a href="#contact" class="fea-tile fea-hire magnetic" data-tilt="6" data-hire-trigger aria-label="Hire me">
+        <span class="fea-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M12 12.5a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9Zm0 2c-4 0-8 2-8 5.2V21h16v-1.3c0-3.2-4-5.2-8-5.2Z"/></svg></span>
+        <span class="fea-label">Hire me</span>
+      </a>
+      <a href="https://github.com/bibekbista0405" target="_blank" rel="noopener noreferrer" class="fea-tile fea-gh magnetic" data-tilt="6" aria-label="Visit Bibek Bista on GitHub">
+        <span class="fea-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M12 2a10 10 0 0 0-3.16 19.49c.5.1.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.46-1.16-1.11-1.47-1.11-1.47-.9-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.89 1.53 2.34 1.09 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.56-1.11-4.56-4.95 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02a9.5 9.5 0 0 1 5 0c1.91-1.3 2.75-1.02 2.75-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.59 1.03 2.68 0 3.85-2.35 4.7-4.58 4.94.36.31.68.92.68 1.85v2.75c0 .26.18.58.69.48A10 10 0 0 0 12 2Z"/></svg></span>
+        <span class="fea-label">GitHub</span>
+      </a>
+      <a href="https://www.linkedin.com/in/bibek-bista-a98415347/" target="_blank" rel="noopener noreferrer" class="fea-tile fea-li magnetic" data-tilt="6" aria-label="Visit Bibek Bista on LinkedIn">
+        <span class="fea-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M6.94 8.5H3.56V20.4h3.38V8.5ZM5.25 3.1a1.96 1.96 0 1 0 0 3.92 1.96 1.96 0 0 0 0-3.92ZM20.4 20.4h-3.37v-6.24c0-1.49-.03-3.4-2.07-3.4-2.08 0-2.4 1.62-2.4 3.3v6.34H9.2V8.5h3.24v1.63h.05c.45-.86 1.56-1.77 3.22-1.77 3.44 0 4.08 2.27 4.08 5.21v6.83Z"/></svg></span>
+        <span class="fea-label">LinkedIn</span>
+      </a>
+    </div>
+
+    <p class="fmeta reveal">Bibek Bista · Nepalgunj, Nepal · © 2026</p>
+    <a href="#top" class="totop reveal magnetic"><span class="totop-arrow">↑</span> Back to top</a>
+  </div>
 </footer>
 
 <div class="resume-viewer" id="resumeViewer" role="dialog" aria-modal="true" aria-label="Bibek Bista's résumé" aria-hidden="true">
@@ -2983,11 +3195,63 @@ footer .totop{display:inline-block;margin-top:16px;font-size:13px;font-weight:70
   var fab = document.getElementById('recruiterFab');
   var panel = document.getElementById('recruiterPanel');
   var rpClose = document.getElementById('rpClose');
-  fab.addEventListener('click', function(){ panel.classList.add('open'); });
-  function closePanel(){ panel.classList.remove('open'); }
+  var rpAvatar = document.getElementById('rpAvatar');
+  var rpCopy = document.getElementById('rpCopy');
+  var rpLastFocused = null;
+
+  /* reuse the real hero photo — no new asset, no placeholder */
+  var heroPhotoSrc = document.querySelector('.photo-tape-wrap img');
+  if(rpAvatar && heroPhotoSrc && heroPhotoSrc.src){ rpAvatar.src = heroPhotoSrc.src; }
+
+  function openPanel(){
+    rpLastFocused = document.activeElement;
+    panel.classList.add('open');
+    panel.setAttribute('aria-hidden', 'false');
+    document.documentElement.style.overflow = 'hidden';
+    window.setTimeout(function(){ rpClose.focus(); }, reduced ? 0 : 200);
+  }
+  function closePanel(){
+    panel.classList.remove('open');
+    panel.setAttribute('aria-hidden', 'true');
+    if(!document.getElementById('hiringRoom').classList.contains('visible') && !document.getElementById('resumeViewer').classList.contains('open')){
+      document.documentElement.style.overflow = '';
+    }
+    if(rpLastFocused && rpLastFocused.focus) rpLastFocused.focus();
+  }
+  fab.addEventListener('click', openPanel);
   rpClose.addEventListener('click', closePanel);
   panel.addEventListener('click', function(e){ if(e.target === panel) closePanel(); });
-  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closePanel(); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && panel.classList.contains('open')) closePanel(); });
+
+  /* copy a plain-text version of the dossier — for pasting into an ATS
+     note, a Slack message to a hiring manager, or an internal ticket */
+  if(rpCopy){
+    var summaryText = [
+      'Bibek Bista — Student Developer · Full-Stack · Cybersecurity Learner',
+      '',
+      'Who: A student developer from Nepal, building real-world applications while developing skills in software engineering, cybersecurity, and AI.',
+      'What he builds: DASH (privacy-first desktop browser), INK (social platform, live), LinkUp (real-time chat, prototype)',
+      'Core skills — building with: React, Node.js, TypeScript, Firebase, Electron',
+      'Core skills — exploring: Linux, Networking, Web security, Auth & CORS',
+      'Direction: Cybersecurity + Software Engineering',
+      'Education: Class 11, Shree Dhambhoji Sec. School, Nepalgunj, Banke',
+      'Status: Open to internships',
+      '',
+      'Résumé: ' + window.location.origin + '/resume/Bibek-Bista-Resume.pdf',
+      'Portfolio: ' + window.location.href.split('#')[0]
+    ].join('\n');
+    var rpCopyDefault = rpCopy.textContent;
+    rpCopy.addEventListener('click', function(){
+      function done(){
+        rpCopy.textContent = '✓ Copied — paste it anywhere';
+        rpCopy.classList.add('copied');
+        window.setTimeout(function(){ rpCopy.textContent = rpCopyDefault; rpCopy.classList.remove('copied'); }, 1800);
+      }
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(summaryText).then(done).catch(function(){});
+      }
+    });
+  }
 
   var navToggle = document.getElementById('navToggle');
   var mobileMenu = document.getElementById('mobileMenu');
@@ -3361,7 +3625,7 @@ footer .totop{display:inline-block;margin-top:16px;font-size:13px;font-weight:70
 
 /* ===================== EMAIL COPY EXPERIENCE ===================== */
 (function(){
-  var EMAIL = 'hello@bibekbista.dev';
+  var EMAIL = 'bibekbista0405@gmail.com';
   document.querySelectorAll('[data-copy-email]').forEach(function(btn){
     var defaultLabel = btn.textContent;
     btn.addEventListener('click', function(e){
@@ -3555,7 +3819,7 @@ footer .totop{display:inline-block;margin-top:16px;font-size:13px;font-weight:70
   /* 1: a friendly note for anyone curious enough to open devtools */
   try {
     console.log('%c\ud83d\udc4b hey, curious dev.', 'font-size:16px;font-weight:700;color:#D6502F;');
-    console.log('%cThis site is hand-built, no template. If you\u2019re digging through the console, you\u2019ll probably like poking around the code too \u2014 say hi: hello@bibekbista.dev', 'font-size:12.5px;color:#6B6053;');
+    console.log('%cThis site is hand-built, no template. If you\u2019re digging through the console, you\u2019ll probably like poking around the code too \u2014 say hi: bibekbista0405@gmail.com', 'font-size:12.5px;color:#6B6053;');
   } catch(consoleErr){ /* some environments lock down console — harmless to skip */ }
 
   /* 2: the footer's coffee line hides a tiny confession on hover/tap */

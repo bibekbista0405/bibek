@@ -544,6 +544,18 @@ a:focus-visible, button:focus-visible, summary:focus-visible{
 .ou-cta-block{text-align:center;margin-top:18px;}
 .ou-cta-block p{font-size:15px;color:var(--ink-soft);margin-bottom:14px;}
 
+.ou-live{
+  max-width:820px;margin:44px auto 0;padding:26px 24px;text-align:center;
+  background:rgba(255,253,248,0.6);border:1px solid var(--line);border-radius:var(--radius-lg);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+}
+.ou-live-eyebrow{font-size:12.5px;font-weight:700;color:var(--ink-soft);letter-spacing:.03em;margin-bottom:16px;}
+.ou-live-chart-wrap{overflow-x:auto;padding-bottom:6px;-webkit-overflow-scrolling:touch;}
+.ou-live-chart{display:block;margin:0 auto;min-width:640px;height:auto;filter:saturate(1.05);}
+.ou-live-link{display:inline-block;margin-top:14px;font-size:13px;font-weight:700;color:var(--coral-dark);}
+.ou-live-link:hover{text-decoration:underline;}
+@media (max-width:700px){.ou-live-chart-wrap{padding-left:4px;}}
+
 @media (max-width:900px){
   .ou-grid{grid-template-columns:repeat(2, minmax(0,1fr));}
   .ou-gh1,.ou-li,.ou-ig,.ou-tt,.ou-fb,.ou-gh2{margin-top:0;}
@@ -1848,7 +1860,7 @@ footer .totop:hover .totop-arrow{transform:translateY(-4px);}
 
       <div class="rp-section">
         <p class="rp-section-num"><span class="rp-num-icon" aria-hidden="true">🎓</span>05 — Education</p>
-        <p class="rp-body">Class 11 · Shree Dhambhoji Sec. School, Nepalgunj, Banke</p>
+        <p class="rp-body">Class 12 · Shree Dhambhoji Sec. School, Nepalgunj, Banke</p>
       </div>
 
       <p class="rp-status">🟡 Open to internships</p>
@@ -2001,7 +2013,7 @@ footer .totop:hover .totop-arrow{transform:translateY(-4px);}
         <div class="sticky-note hand">still figuring things out — and enjoying it</div>
       </div>
       <div class="about-copy reveal">
-        <p>My name is Bibek Bista. I'm a Class 11 student from Nepalgunj, Nepal, interested in software engineering, cybersecurity, AI, and design.</p>
+        <p>My name is Bibek Bista. I'm a Class 12 student from Nepalgunj, Nepal, interested in software engineering, cybersecurity, AI, and design.</p>
         <p>I enjoy learning by building things rather than only studying technologies theoretically — most of what I know came from a project breaking at 1am and me figuring out why.</p>
         <p>My long-term goal is to grow into a cybersecurity engineer while continuing to build software along the way.</p>
 
@@ -2302,7 +2314,7 @@ footer .totop:hover .totop-arrow{transform:translateY(-4px);}
     <div class="edu-freelance" id="resume">
       <div class="info-card reveal">
         <h3>Education</h3>
-        <div class="info-row"><span class="k">Currently</span><span>Class 11</span></div>
+        <div class="info-row"><span class="k">Currently</span><span>Class 12</span></div>
         <div class="info-row"><span class="k">School</span><span>Shree Dhambhoji Sec School</span></div>
         <div class="info-row"><span class="k">Additional</span><span>DCA, EDUTECH Institute</span></div>
         <div class="info-row"><span class="k">Duration</span><span>6 months</span></div>
@@ -2449,6 +2461,14 @@ footer .totop:hover .totop-arrow{transform:translateY(-4px);}
           </span>
         </a>
       </div>
+    </div>
+
+    <div class="ou-live reveal">
+      <p class="ou-live-eyebrow">📡 Live from GitHub — not a screenshot, this updates on its own</p>
+      <div class="ou-live-chart-wrap">
+        <img src="https://ghchart.rshah.org/D6502F/bibekbista0405" alt="Bibek Bista's live GitHub contribution graph" class="ou-live-chart" loading="lazy" onerror="this.closest('.ou-live').style.display='none';">
+      </div>
+      <a href="https://github.com/bibekbista0405" target="_blank" rel="noopener noreferrer" class="ou-live-link">See full GitHub profile ↗</a>
     </div>
 
     <p class="ou-note hand reveal">Still building things. Still learning. Still curious.</p>
@@ -3277,7 +3297,7 @@ footer .totop:hover .totop-arrow{transform:translateY(-4px);}
       'Core skills — building with: React, Node.js, TypeScript, Firebase, Electron',
       'Core skills — exploring: Linux, Networking, Web security, Auth & CORS',
       'Direction: Cybersecurity + Software Engineering',
-      'Education: Class 11, Shree Dhambhoji Sec. School, Nepalgunj, Banke',
+      'Education: Class 12, Shree Dhambhoji Sec. School, Nepalgunj, Banke',
       'Status: Open to internships',
       '',
       'Résumé: ' + window.location.origin + '/resume/Bibek-Bista-Resume.pdf',

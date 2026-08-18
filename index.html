@@ -386,6 +386,14 @@ a:focus-visible, button:focus-visible, summary:focus-visible{
   height:150px;border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;
   font-size:44px;position:relative;overflow:hidden;
 }
+.proj-visual-gh img{
+  width:100%;height:100%;object-fit:cover;object-position:center 30%;
+  transition:transform .35s cubic-bezier(.2,.8,.2,1), filter .3s ease;
+}
+.proj-card:hover .proj-visual-gh img{transform:scale(1.05);}
+/* if the GitHub preview image fails to load (renamed/private repo etc.),
+   fall back to the original emoji treatment exactly as before */
+.proj-visual-fallback::after{content:attr(data-fallback);}
 .proj-status{
   position:absolute;top:0;right:22px;z-index:2;
   font-size:10.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;
@@ -1635,34 +1643,57 @@ footer .totop:hover .totop-arrow{transform:translateY(-4px);}
 .thirty-sec.open{opacity:1;visibility:visible;pointer-events:auto;transition:opacity .35s ease, visibility 0s linear 0s;}
 .ts-backdrop{position:absolute;inset:0;background:rgba(26,22,18,0.62);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);}
 .ts-panel{
-  position:relative;width:100%;max-width:520px;min-height:340px;
+  position:relative;width:100%;max-width:520px;min-height:400px;overflow:hidden;
   background:var(--cream);border-radius:var(--radius-lg);border:1px solid rgba(255,253,248,0.5);
   box-shadow:0 40px 90px -30px rgba(20,16,12,0.5);padding:40px 34px 26px;
   display:flex;flex-direction:column;
-  transform:scale(0.94) translateY(16px);opacity:0;transition:transform .4s cubic-bezier(.2,.85,.25,1.1), opacity .3s ease;
+  transform:scale(0.94) translateY(16px);opacity:0;transition:transform .4s cubic-bezier(.2,.85,.25,1.1), opacity .3s ease, background .6s ease;
 }
 .thirty-sec.open .ts-panel{transform:scale(1) translateY(0);opacity:1;}
+/* each scene gets its own soft cinematic backdrop tint */
+.ts-panel[data-active-slide="0"]{background:linear-gradient(155deg,#FFF7EC,var(--cream) 55%);}
+.ts-panel[data-active-slide="1"]{background:linear-gradient(155deg,#FDEBD9,var(--cream) 55%);}
+.ts-panel[data-active-slide="2"]{background:linear-gradient(155deg,#FBEAF0,var(--cream) 55%);}
+.ts-panel[data-active-slide="3"]{background:linear-gradient(155deg,#EAE4F3,var(--cream) 55%);}
+.ts-panel[data-active-slide="4"]{background:linear-gradient(155deg,#E7EEF6,var(--cream) 55%);}
+.ts-panel[data-active-slide="5"]{background:linear-gradient(155deg,#EAF3DE,var(--cream) 55%);}
+
 .ts-skip{
   position:absolute;top:16px;right:16px;background:rgba(255,253,248,0.7);border:1px solid var(--line);
-  border-radius:100px;padding:7px 13px;font-size:12px;font-weight:600;color:var(--ink-soft);cursor:pointer;
+  border-radius:100px;padding:7px 13px;font-size:12px;font-weight:600;color:var(--ink-soft);cursor:pointer;z-index:2;
 }
 .ts-skip:hover{color:var(--ink);background:var(--paper);}
 .ts-skip:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
-.ts-progress{display:flex;gap:5px;margin-bottom:26px;}
-.ts-progress span{flex:1;height:3px;border-radius:3px;background:var(--line);overflow:hidden;position:relative;}
-.ts-progress span i{
-  display:block;height:100%;width:0%;background:var(--coral);border-radius:3px;
-  transition:width linear;
+.ts-counter{
+  position:absolute;top:19px;left:34px;font-family:'Fredoka';font-size:11.5px;font-weight:700;
+  letter-spacing:.08em;color:var(--ink-soft);z-index:2;
 }
-.ts-progress span.done i{width:100%;transition:none;}
-.ts-slides{position:relative;flex:1;min-height:170px;}
+
+.ts-progress{display:flex;gap:6px;margin-bottom:24px;margin-top:14px;}
+.ts-progress span{flex:1;height:5px;border-radius:100px;background:rgba(42,37,33,0.1);overflow:hidden;position:relative;}
+.ts-progress span i{
+  display:block;height:100%;width:0%;background:linear-gradient(90deg,var(--coral),var(--gold));border-radius:100px;
+  transition:width linear;box-shadow:0 0 8px rgba(255,107,74,0.5);
+}
+.ts-progress span.done i{width:100%;transition:none;box-shadow:none;}
+
+.ts-slides{position:relative;flex:1;min-height:230px;}
 .ts-slide{
   position:absolute;inset:0;opacity:0;transform:translateX(14px);pointer-events:none;
   transition:opacity .35s ease, transform .35s cubic-bezier(.2,.8,.2,1);
 }
 .ts-slide.active{opacity:1;transform:translateX(0);pointer-events:auto;}
+.ts-icon{
+  display:inline-flex;align-items:center;justify-content:center;width:52px;height:52px;border-radius:50%;
+  background:rgba(255,253,248,0.75);border:1px solid var(--line);font-size:24px;margin-bottom:16px;
+  box-shadow:0 10px 24px -14px rgba(42,37,33,0.4);
+  transform:scale(0.5) rotate(-12deg);opacity:0;transition:transform .5s cubic-bezier(.2,.9,.24,1.4) .08s, opacity .3s ease .08s;
+}
+.ts-slide.active .ts-icon{transform:scale(1) rotate(0deg);opacity:1;}
 .ts-eyebrow{font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--coral-dark);margin-bottom:8px;}
-.ts-slide h3{font-family:'Fredoka';font-size:24px;margin-bottom:12px;line-height:1.15;}
+.ts-slide h3{font-family:'Fredoka';font-size:25px;margin-bottom:12px;line-height:1.15;}
+.ts-slide h3 .tsw{display:inline-block;opacity:0;transform:translateY(10px);transition:opacity .4s ease, transform .4s cubic-bezier(.2,.8,.2,1);}
+.ts-slide.active h3 .tsw{opacity:1;transform:translateY(0);}
 .ts-slide p{font-size:14.5px;color:var(--ink-soft);line-height:1.6;}
 .ts-cta-row{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap;}
 .ts-btn{
@@ -1672,7 +1703,7 @@ footer .totop:hover .totop-arrow{transform:translateY(-4px);}
 }
 .ts-btn:hover{transform:translateY(-2px);border-color:var(--gold);}
 .ts-btn-primary{background:var(--coral);border-color:var(--coral);color:var(--paper);}
-.ts-controls{display:flex;align-items:center;justify-content:space-between;margin-top:22px;}
+.ts-controls{display:flex;align-items:center;justify-content:space-between;margin-top:22px;position:relative;z-index:2;}
 .ts-nav{
   width:34px;height:34px;border-radius:50%;background:var(--paper);border:1px solid var(--line);
   color:var(--ink);font-size:15px;cursor:pointer;transition:background .2s ease, transform .15s ease;
@@ -1686,9 +1717,10 @@ footer .totop:hover .totop-arrow{transform:translateY(-4px);}
 @media (max-width:600px){
   .ts-panel{padding:30px 22px 20px;}
   .ts-slide h3{font-size:20px;}
+  .ts-counter{left:22px;}
 }
 @media (prefers-reduced-motion: reduce){
-  .thirty-sec, .ts-panel, .ts-slide{transition:opacity .15s ease;}
+  .thirty-sec, .ts-panel, .ts-slide, .ts-icon, .ts-slide h3 .tsw{transition:opacity .15s ease;transform:none;}
   .ts-progress span i{transition:none;}
 }
 
@@ -2058,7 +2090,9 @@ footer .totop:hover .totop-arrow{transform:translateY(-4px);}
     <div class="shelf-scroller" tabindex="0" role="region" aria-label="Project shelf, scroll to see more">
 
       <article class="proj-card" data-cursor-label="Open" data-tilt="6" data-status="active">
-        <div class="proj-visual" style="background:#E7EEF6;">💻</div>
+        <div class="proj-visual proj-visual-gh" style="background:#E7EEF6;" data-fallback="💻">
+          <img src="https://opengraph.githubassets.com/1/bibekbista0405/Dash-Browser" alt="DASH repository preview from GitHub" loading="lazy" onerror="this.closest('.proj-visual').classList.add('proj-visual-fallback'); this.remove();">
+        </div>
         <span class="proj-status status-active">Active build</span>
         <h3>DASH</h3>
         <p class="proj-desc">A privacy-first desktop browser that puts user control front and center. Renderer → Electron → IPC → services → SQLite.</p>
@@ -2070,7 +2104,9 @@ footer .totop:hover .totop-arrow{transform:translateY(-4px);}
       </article>
 
       <article class="proj-card" data-cursor-label="Open" data-tilt="6" data-status="active">
-        <div class="proj-visual" style="background:#FBEAF0;">📱</div>
+        <div class="proj-visual proj-visual-gh" style="background:#FBEAF0;" data-fallback="📱">
+          <img src="https://opengraph.githubassets.com/1/bibekbista0405/INK" alt="INK repository preview from GitHub" loading="lazy" onerror="this.closest('.proj-visual').classList.add('proj-visual-fallback'); this.remove();">
+        </div>
         <span class="proj-status status-active">Active build</span>
         <h3>INK</h3>
         <p class="proj-desc">"I Need To Know" — a social platform with registration, login, username verification, and a full frontend/backend split.</p>
@@ -2775,37 +2811,44 @@ footer .totop:hover .totop-arrow{transform:translateY(-4px);}
 
 <div class="thirty-sec" id="thirtySec" role="dialog" aria-modal="true" aria-label="30-second summary" aria-hidden="true">
   <div class="ts-backdrop" id="tsBackdrop"></div>
-  <div class="ts-panel">
+  <div class="ts-panel" id="tsPanel">
     <button type="button" class="ts-skip" id="tsSkip">Skip ✕</button>
+    <p class="ts-counter" id="tsCounter" aria-hidden="true">01 / 06</p>
     <div class="ts-progress" id="tsProgress" aria-hidden="true"></div>
 
     <div class="ts-slides" id="tsSlides">
       <div class="ts-slide" data-slide="0">
+        <span class="ts-icon" aria-hidden="true">👋</span>
         <p class="ts-eyebrow">Who is Bibek?</p>
         <h3>A student developer from Nepal.</h3>
         <p>Exploring full-stack development, cybersecurity, and AI — one real project at a time, not just tutorials.</p>
       </div>
       <div class="ts-slide" data-slide="1">
+        <span class="ts-icon" aria-hidden="true">🛠</span>
         <p class="ts-eyebrow">What does he build?</p>
         <h3>Full-stack web apps. For real.</h3>
         <p>Real registration and auth, real APIs, real deployments — the whole path from idea to something you can actually open in a browser.</p>
       </div>
       <div class="ts-slide" data-slide="2">
+        <span class="ts-icon" aria-hidden="true">🧩</span>
         <p class="ts-eyebrow">Best projects</p>
         <h3>DASH · INK · LinkUp</h3>
-        <p>DASH — a privacy-first desktop browser, in active development. INK — a live social platform with real auth. LinkUp — a real-time chat concept, honestly labeled as a prototype.</p>
+        <p>DASH — a privacy-first desktop browser, in active development. INK — a live social platform with real auth. LinkUp — a real-time chat prototype.</p>
       </div>
       <div class="ts-slide" data-slide="3">
+        <span class="ts-icon" aria-hidden="true">🧭</span>
         <p class="ts-eyebrow">Technical direction</p>
         <h3>Cybersecurity + software engineering.</h3>
         <p>That's the long-term direction — building real software while getting serious about the security side of it.</p>
       </div>
       <div class="ts-slide" data-slide="4">
+        <span class="ts-icon" aria-hidden="true">📚</span>
         <p class="ts-eyebrow">Currently learning</p>
         <h3>Linux, networking, web security.</h3>
         <p>Kali Linux, Termux, CORS, authentication, deployment security — the fundamentals that make software trustworthy, not just functional.</p>
       </div>
       <div class="ts-slide" data-slide="5">
+        <span class="ts-icon" aria-hidden="true">🤝</span>
         <p class="ts-eyebrow">What's next</p>
         <h3>Let's talk.</h3>
         <p>That's the 30-second version. If any of it landed, here's where to go next.</p>
@@ -3655,7 +3698,9 @@ footer .totop:hover .totop-arrow{transform:translateY(-4px);}
   var modal = document.getElementById('thirtySec');
   if(!trigger || !modal) return;
   var backdrop = document.getElementById('tsBackdrop');
+  var panel = document.getElementById('tsPanel');
   var skipBtn = document.getElementById('tsSkip');
+  var counterEl = document.getElementById('tsCounter');
   var prevBtn = document.getElementById('tsPrev');
   var nextBtn = document.getElementById('tsNext');
   var dotsWrap = document.getElementById('tsDots');
@@ -3663,7 +3708,19 @@ footer .totop:hover .totop-arrow{transform:translateY(-4px);}
   var slides = Array.prototype.slice.call(document.querySelectorAll('.ts-slide'));
   var DURATIONS = [5000, 5000, 8000, 5000, 4000, 0]; /* ms per slide; last slide (CTA) doesn't auto-advance */
   var reducedTs = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var idx = 0, lastFocused = null, timer = null, segStart = 0, remaining = 0, paused = false;
+  var idx = 0, lastFocused = null, timer = null;
+
+  /* wrap each word of every headline in its own span, once, so it can
+     stagger in on entry — pure CSS-driven, no animation library needed */
+  slides.forEach(function(s){
+    var h3 = s.querySelector('h3');
+    if(!h3 || h3.dataset.wrapped) return;
+    var words = h3.textContent.split(' ');
+    h3.innerHTML = words.map(function(w, i){
+      return '<span class="tsw" style="transition-delay:' + (i * 0.05) + 's">' + w + '</span>';
+    }).join(' ');
+    h3.dataset.wrapped = '1';
+  });
 
   slides.forEach(function(s, i){
     var seg = document.createElement('span');
@@ -3688,6 +3745,8 @@ footer .totop:hover .totop-arrow{transform:translateY(-4px);}
       if(i !== idx){ bar.style.transition = 'none'; bar.style.width = (i < idx) ? '100%' : '0%'; }
     });
     prevBtn.disabled = (idx === 0);
+    panel.setAttribute('data-active-slide', String(idx));
+    counterEl.textContent = String(idx + 1).padStart(2, '0') + ' / ' + String(slides.length).padStart(2, '0');
   }
 
   function startSegment(){
@@ -3700,8 +3759,6 @@ footer .totop:hover .totop-arrow{transform:translateY(-4px);}
     void bar.offsetWidth;
     bar.style.transition = 'width ' + dur + 'ms linear';
     bar.style.width = '100%';
-    segStart = Date.now();
-    remaining = dur;
     timer = window.setTimeout(function(){ goTo(idx + 1); }, dur);
   }
 
@@ -3712,28 +3769,6 @@ footer .totop:hover .totop-arrow{transform:translateY(-4px);}
     startSegment();
   }
 
-  function pause(){
-    if(paused || reducedTs) return;
-    paused = true;
-    clearTimer();
-    var bar = segEls[idx].querySelector('i');
-    var computed = window.getComputedStyle(bar).width;
-    bar.style.transition = 'none';
-    bar.style.width = computed;
-    remaining = Math.max(0, remaining - (Date.now() - segStart));
-  }
-  function resume(){
-    if(!paused || reducedTs) return;
-    paused = false;
-    if(remaining <= 0){ goTo(idx + 1); return; }
-    var bar = segEls[idx].querySelector('i');
-    void bar.offsetWidth;
-    bar.style.transition = 'width ' + remaining + 'ms linear';
-    bar.style.width = '100%';
-    segStart = Date.now();
-    timer = window.setTimeout(function(){ goTo(idx + 1); }, remaining);
-  }
-
   function openTs(){
     lastFocused = document.activeElement;
     idx = 0;
@@ -3742,8 +3777,11 @@ footer .totop:hover .totop-arrow{transform:translateY(-4px);}
     modal.setAttribute('aria-hidden', 'false');
     document.documentElement.style.overflow = 'hidden';
     document.addEventListener('keydown', keyHandler);
+    /* plays start to finish automatically — no click, hover, or focus is
+       required to keep it moving. Prev/Next/dots remain available purely
+       as an optional manual override, but never pause the auto-advance. */
     startSegment();
-    window.setTimeout(function(){ skipBtn.focus(); }, 50);
+    window.setTimeout(function(){ skipBtn.focus({preventScroll:true}); }, reducedTs ? 0 : 300);
   }
   function closeTs(){
     clearTimer();
@@ -3764,9 +3802,6 @@ footer .totop:hover .totop-arrow{transform:translateY(-4px);}
   backdrop.addEventListener('click', closeTs);
   nextBtn.addEventListener('click', function(){ goTo(idx + 1); });
   prevBtn.addEventListener('click', function(){ goTo(idx - 1); });
-  modal.addEventListener('mouseenter', pause);
-  modal.addEventListener('mouseleave', resume);
-  modal.addEventListener('focusin', pause);
 
   /* the résumé / contact CTAs on the final slide should close this overlay
      first so the résumé viewer / contact section aren't fighting for the screen */

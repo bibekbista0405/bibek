@@ -394,6 +394,32 @@ a:focus-visible, button:focus-visible, summary:focus-visible{
 /* if the GitHub preview image fails to load (renamed/private repo etc.),
    fall back to the original emoji treatment exactly as before */
 .proj-visual-fallback::after{content:attr(data-fallback);}
+
+/* ===================== MORE FROM GITHUB ===================== */
+.gh-grid{
+  display:grid;grid-template-columns:repeat(auto-fit, minmax(240px, 1fr));gap:22px;
+}
+.gh-card{
+  background:var(--paper);border:1px solid var(--line);border-radius:var(--radius-lg);
+  padding:20px;display:flex;flex-direction:column;gap:12px;
+}
+.gh-visual{
+  height:130px;border-radius:var(--radius-md);overflow:hidden;position:relative;
+  display:flex;align-items:center;justify-content:center;font-size:38px;background:var(--cream-2);
+}
+.gh-visual img{width:100%;height:100%;object-fit:cover;object-position:center 30%;transition:transform .35s cubic-bezier(.2,.8,.2,1);}
+.gh-card:hover .gh-visual img{transform:scale(1.05);}
+.gh-visual-fallback::after{content:attr(data-fallback);}
+.gh-card h3{font-family:'Fredoka';font-size:17px;}
+.gh-desc{font-size:13.5px;color:var(--ink-soft);line-height:1.55;flex:1;}
+.gh-tags{display:flex;flex-wrap:wrap;gap:6px;}
+.gh-tags .tag{font-size:10.5px;}
+.gh-links{display:flex;gap:12px;}
+.gh-links a{font-size:12.5px;font-weight:700;color:var(--coral-dark);text-decoration:underline;text-underline-offset:3px;}
+.gh-links a:hover{color:var(--coral);}
+.gh-more{text-align:center;margin-top:30px;}
+.gh-more a{font-size:13.5px;font-weight:700;color:var(--ink-soft);}
+.gh-more a:hover{color:var(--ink);text-decoration:underline;}
 .proj-status{
   position:absolute;top:0;right:22px;z-index:2;
   font-size:10.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;
@@ -2235,6 +2261,68 @@ footer .totop:hover .totop-arrow{transform:translateY(-4px);}
       </div>
       <div class="think-note" id="thinkNote" aria-live="polite"></div>
     </div>
+  </div>
+</section>
+
+<section class="section section-alt" id="more-github">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">📦 More from GitHub</p>
+      <h2>A few more things I've shipped.</h2>
+      <p>Smaller builds and side projects, pulled straight from my GitHub — not the main lineup, but real, working code.</p>
+    </div>
+
+    <div class="gh-grid">
+      <article class="gh-card reveal" data-tilt="6">
+        <div class="gh-visual" data-fallback="💬">
+          <img src="https://opengraph.githubassets.com/1/bibekbista0405/Linkup" alt="LinkUp repository preview from GitHub" loading="lazy" onerror="this.closest('.gh-visual').classList.add('gh-visual-fallback'); this.remove();">
+        </div>
+        <h3>LinkUp</h3>
+        <p class="gh-desc">A fully working WhatsApp-style messaging and calling app — real-time chat, friend requests, blocking, and WebRTC voice/video calls, running entirely on a local SQLite database.</p>
+        <div class="gh-tags"><span class="tag">Next.js</span><span class="tag">TypeScript</span><span class="tag">Socket.IO</span><span class="tag">WebRTC</span><span class="tag">SQLite</span></div>
+        <div class="gh-links"><a href="https://github.com/bibekbista0405/Linkup" target="_blank" rel="noopener noreferrer">GitHub ↗</a></div>
+      </article>
+
+      <article class="gh-card reveal" data-tilt="6">
+        <div class="gh-visual" data-fallback="🌤">
+          <img src="https://opengraph.githubassets.com/1/bibekbista0405/OB-Whether" alt="OB-Weather repository preview from GitHub" loading="lazy" onerror="this.closest('.gh-visual').classList.add('gh-visual-fallback'); this.remove();">
+        </div>
+        <h3>OB-Weather</h3>
+        <p class="gh-desc">A clean, single-page weather app that turns forecast data into something visual and human-friendly — hourly and 5-day outlooks, a sunrise/sunset tracker, and a plain-language "how it actually feels" comfort index.</p>
+        <div class="gh-tags"><span class="tag">Vanilla JS</span><span class="tag">Open-Meteo API</span><span class="tag">CSS</span></div>
+        <div class="gh-links"><a href="https://github.com/bibekbista0405/OB-Whether" target="_blank" rel="noopener noreferrer">GitHub ↗</a></div>
+      </article>
+
+      <article class="gh-card reveal" data-tilt="6">
+        <div class="gh-visual" data-fallback="🎵">
+          <img src="https://opengraph.githubassets.com/1/bibekbista0405/OB-Tune" alt="OB-Tune repository preview from GitHub" loading="lazy" onerror="this.closest('.gh-visual').classList.add('gh-visual-fallback'); this.remove();">
+        </div>
+        <h3>OB-Tune</h3>
+        <p class="gh-desc">An online music player — a Vite frontend paired with a small Node API that searches and streams through public Piped/Invidious instances, with automatic provider fallback if one goes down.</p>
+        <div class="gh-tags"><span class="tag">Vite</span><span class="tag">Node.js</span><span class="tag">Express</span></div>
+        <div class="gh-links">
+          <a href="https://github.com/bibekbista0405/OB-Tune" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+          <a href="https://ob-tune.vercel.app" target="_blank" rel="noopener noreferrer">Live ↗</a>
+        </div>
+      </article>
+
+      <article class="gh-card reveal" data-tilt="6">
+        <div class="gh-visual" data-fallback="📖">
+          <img src="https://opengraph.githubassets.com/1/bibekbista0405/Jayandra" alt="Jayandra repository preview from GitHub" loading="lazy" onerror="this.closest('.gh-visual').classList.add('gh-visual-fallback'); this.remove();">
+        </div>
+        <h3>Jayandra</h3>
+        <p class="gh-desc">A digital scrapbook of sorts — a small, personal vanilla JS project.</p>
+        <div class="gh-tags"><span class="tag">HTML</span><span class="tag">CSS</span><span class="tag">JavaScript</span></div>
+        <div class="gh-links">
+          <a href="https://github.com/bibekbista0405/Jayandra" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+          <a href="https://jayandra.vercel.app" target="_blank" rel="noopener noreferrer">Live ↗</a>
+        </div>
+      </article>
+    </div>
+
+    <p class="gh-more">
+      <a href="https://github.com/bibekbista0405?tab=repositories" target="_blank" rel="noopener noreferrer">See everything on GitHub ↗</a>
+    </p>
   </div>
 </section>
 

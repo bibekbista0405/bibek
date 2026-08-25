@@ -1809,6 +1809,46 @@ footer .totop:hover .totop-arrow{transform:translateY(-4px);}
 @media (prefers-reduced-motion: reduce){
   .case-study, .cs-panel{transition:opacity .15s ease;}
 }
+
+/* ===================== TOUCH FEEDBACK ===================== */
+/* Everything above was designed with :hover in mind. On a touch screen,
+   :hover never fires, so tapping any of these gives zero visual response —
+   the site's creativity effectively goes invisible on mobile. This mirrors
+   the intended feedback onto :active for touch-only devices, and removes
+   the default blue tap-flash browsers add so it feels intentional instead
+   of accidental. */
+@media (hover:none){
+  * { -webkit-tap-highlight-color: transparent; }
+
+  .btn-primary:active{transform:translateY(-1px) scale(0.98);box-shadow:var(--shadow-soft);}
+  .btn-secondary:active{background:var(--ink);color:var(--cream);transform:scale(0.98);}
+  .btn-ghost:active{border-color:var(--coral);color:var(--coral-dark);transform:scale(0.98);}
+
+  .proj-card:active{box-shadow:var(--shadow-soft);transform:scale(0.99);}
+  .proj-card:active .proj-visual-gh img{transform:scale(1.04);}
+  .gh-card:active{transform:scale(0.99);}
+  .gh-card:active .gh-visual img{transform:scale(1.04);}
+
+  .pf-btn:active{background:var(--paper);color:var(--ink);}
+  .think-opt:active{background:var(--paper);transform:scale(0.97);}
+  .chip:active{background:var(--paper);}
+  .peg-tool:active .peg-label{box-shadow:0 14px 22px -11px rgba(42,37,33,0.42);}
+
+  .cs-btn:active{border-color:var(--gold);transform:scale(0.98);}
+  .ts-btn:active{border-color:var(--gold);transform:scale(0.97);}
+  .ts-nav:active{background:var(--cream-2);transform:scale(0.93);}
+  .ts-dot:active{background:var(--coral);}
+
+  .fea-tile:active{background:rgba(255,253,248,0.92);box-shadow:0 20px 40px -18px rgba(42,37,33,0.45);transform:scale(0.97);}
+  .fea-tile:active .fea-icon{transform:scale(1.05);}
+  .fea-resume:active .fea-icon{background:#FDEBD9;color:#9A5C1A;}
+  .fea-hire:active .fea-icon{background:var(--coral);color:var(--paper);}
+  .fea-gh:active .fea-icon{background:var(--ink);color:var(--cream);}
+  .fea-li:active .fea-icon{background:#DCEAF2;color:var(--sky-deep);}
+
+  .rv-btn:active, .room-btn:active{transform:scale(0.97);}
+  .choice-card:active{transform:scale(0.98);}
+}
 </style>
 <noscript><style>.reveal{opacity:1 !important;transform:none !important;}</style></noscript>
 </head>
@@ -2290,7 +2330,10 @@ footer .totop:hover .totop-arrow{transform:translateY(-4px);}
         <h3>OB-Weather</h3>
         <p class="gh-desc">A clean, single-page weather app that turns forecast data into something visual and human-friendly — hourly and 5-day outlooks, a sunrise/sunset tracker, and a plain-language "how it actually feels" comfort index.</p>
         <div class="gh-tags"><span class="tag">Vanilla JS</span><span class="tag">Open-Meteo API</span><span class="tag">CSS</span></div>
-        <div class="gh-links"><a href="https://github.com/bibekbista0405/OB-Whether" target="_blank" rel="noopener noreferrer">GitHub ↗</a></div>
+        <div class="gh-links">
+          <a href="https://github.com/bibekbista0405/OB-Whether" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+          <a href="https://bibekbista0405.github.io/OB-Whether/" target="_blank" rel="noopener noreferrer">Live ↗</a>
+        </div>
       </article>
 
       <article class="gh-card reveal" data-tilt="6">

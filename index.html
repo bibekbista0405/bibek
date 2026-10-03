@@ -420,6 +420,11 @@ a:focus-visible, button:focus-visible, summary:focus-visible{
 .gh-more{text-align:center;margin-top:30px;}
 .gh-more a{font-size:13.5px;font-weight:700;color:var(--ink-soft);}
 .gh-more a:hover{color:var(--ink);text-decoration:underline;}
+.gh-live-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--sage);animation:pulse 1.8s infinite;margin-right:5px;vertical-align:middle;}
+.gh-updated{font-size:11px;color:var(--ink-soft);margin-top:-4px;}
+.gh-card.gh-card-new{animation:ghCardIn .5s cubic-bezier(.2,.85,.25,1.1);}
+@keyframes ghCardIn{from{opacity:0;transform:translateY(14px) scale(.97);}to{opacity:1;transform:translateY(0) scale(1);}}
+@media (prefers-reduced-motion: reduce){.gh-card.gh-card-new{animation:none;}}
 .proj-status{
   position:absolute;top:0;right:22px;z-index:2;
   font-size:10.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;
@@ -2307,13 +2312,13 @@ footer .totop:hover .totop-arrow{transform:translateY(-4px);}
 <section class="section section-alt" id="more-github">
   <div class="wrap">
     <div class="section-head">
-      <p class="eyebrow">📦 More from GitHub</p>
+      <p class="eyebrow" id="ghEyebrow">📦 More from GitHub</p>
       <h2>A few more things I've shipped.</h2>
       <p>Smaller builds and side projects, pulled straight from my GitHub — not the main lineup, but real, working code.</p>
     </div>
 
-    <div class="gh-grid">
-      <article class="gh-card reveal" data-tilt="6">
+    <div class="gh-grid" id="ghGrid">
+      <article class="gh-card reveal" data-tilt="6" data-repo="linkup">
         <div class="gh-visual" data-fallback="💬">
           <img src="https://opengraph.githubassets.com/1/bibekbista0405/Linkup" alt="LinkUp repository preview from GitHub" loading="lazy" onerror="this.closest('.gh-visual').classList.add('gh-visual-fallback'); this.remove();">
         </div>
@@ -2323,7 +2328,7 @@ footer .totop:hover .totop-arrow{transform:translateY(-4px);}
         <div class="gh-links"><a href="https://github.com/bibekbista0405/Linkup" target="_blank" rel="noopener noreferrer">GitHub ↗</a></div>
       </article>
 
-      <article class="gh-card reveal" data-tilt="6">
+      <article class="gh-card reveal" data-tilt="6" data-repo="ob-whether">
         <div class="gh-visual" data-fallback="🌤">
           <img src="https://opengraph.githubassets.com/1/bibekbista0405/OB-Whether" alt="OB-Weather repository preview from GitHub" loading="lazy" onerror="this.closest('.gh-visual').classList.add('gh-visual-fallback'); this.remove();">
         </div>
@@ -2336,7 +2341,7 @@ footer .totop:hover .totop-arrow{transform:translateY(-4px);}
         </div>
       </article>
 
-      <article class="gh-card reveal" data-tilt="6">
+      <article class="gh-card reveal" data-tilt="6" data-repo="ob-tune">
         <div class="gh-visual" data-fallback="🎵">
           <img src="https://opengraph.githubassets.com/1/bibekbista0405/OB-Tune" alt="OB-Tune repository preview from GitHub" loading="lazy" onerror="this.closest('.gh-visual').classList.add('gh-visual-fallback'); this.remove();">
         </div>
@@ -2349,7 +2354,7 @@ footer .totop:hover .totop-arrow{transform:translateY(-4px);}
         </div>
       </article>
 
-      <article class="gh-card reveal" data-tilt="6">
+      <article class="gh-card reveal" data-tilt="6" data-repo="jayandra">
         <div class="gh-visual" data-fallback="📖">
           <img src="https://opengraph.githubassets.com/1/bibekbista0405/Jayandra" alt="Jayandra repository preview from GitHub" loading="lazy" onerror="this.closest('.gh-visual').classList.add('gh-visual-fallback'); this.remove();">
         </div>
@@ -3632,24 +3637,29 @@ footer .totop:hover .totop-arrow{transform:translateY(-4px);}
         btn.addEventListener('mouseleave', function(){ xTo(0); yTo(0); });
       });
 
-      /* ---------- motion primitive: 3D tilt cards — project shelf + social universe ---------- */
-      document.querySelectorAll('[data-tilt]').forEach(function(card){
-        var maxTilt = parseFloat(card.getAttribute('data-tilt')) || 7;
-        gsap.set(card, {transformPerspective: 800});
-        var rxTo = gsap.quickTo(card, 'rotationX', {duration: 0.45, ease: 'power3.out'});
-        var ryTo = gsap.quickTo(card, 'rotationY', {duration: 0.45, ease: 'power3.out'});
-        var yTo2 = gsap.quickTo(card, 'y', {duration: 0.45, ease: 'power3.out'});
-        var sTo2 = gsap.quickTo(card, 'scale', {duration: 0.45, ease: 'power3.out'});
-        card.addEventListener('mousemove', function(e){
-          var r = card.getBoundingClientRect();
-          var px = (e.clientX - r.left) / r.width;
-          var py = (e.clientY - r.top) / r.height;
-          ryTo((px - 0.5) * maxTilt * 2);
-          rxTo((0.5 - py) * maxTilt * 2);
+      /* ---------- motion primitive: 3D tilt cards — project shelf + social universe ----------
+         exposed on window so cards added later (e.g. the live GitHub feed) can opt in too */
+      window.initTiltCards = function(scope){
+        (scope || document).querySelectorAll('[data-tilt]:not([data-tilt-bound])').forEach(function(card){
+          card.setAttribute('data-tilt-bound', '1');
+          var maxTilt = parseFloat(card.getAttribute('data-tilt')) || 7;
+          gsap.set(card, {transformPerspective: 800});
+          var rxTo = gsap.quickTo(card, 'rotationX', {duration: 0.45, ease: 'power3.out'});
+          var ryTo = gsap.quickTo(card, 'rotationY', {duration: 0.45, ease: 'power3.out'});
+          var yTo2 = gsap.quickTo(card, 'y', {duration: 0.45, ease: 'power3.out'});
+          var sTo2 = gsap.quickTo(card, 'scale', {duration: 0.45, ease: 'power3.out'});
+          card.addEventListener('mousemove', function(e){
+            var r = card.getBoundingClientRect();
+            var px = (e.clientX - r.left) / r.width;
+            var py = (e.clientY - r.top) / r.height;
+            ryTo((px - 0.5) * maxTilt * 2);
+            rxTo((0.5 - py) * maxTilt * 2);
+          });
+          card.addEventListener('mouseenter', function(){ yTo2(-6); sTo2(1.02); });
+          card.addEventListener('mouseleave', function(){ rxTo(0); ryTo(0); yTo2(0); sTo2(1); });
         });
-        card.addEventListener('mouseenter', function(){ yTo2(-6); sTo2(1.02); });
-        card.addEventListener('mouseleave', function(){ rxTo(0); ryTo(0); yTo2(0); sTo2(1); });
-      });
+      };
+      window.initTiltCards();
     }
 
     /* ---------- desk illustration: cursor-tilt diorama + follow-glow (desktop, pointer-fine only) ---------- */
@@ -3728,6 +3738,115 @@ footer .totop:hover .totop-arrow{transform:translateY(-4px);}
   } else {
     document.querySelectorAll('.reveal').forEach(function(el){ el.classList.add('in'); });
   }
+})();
+
+/* ===================== LIVE GITHUB FEED — "More from GitHub" auto-updates ===================== */
+(function(){
+  var grid = document.getElementById('ghGrid');
+  var eyebrow = document.getElementById('ghEyebrow');
+  if(!grid) return;
+
+  var USERNAME = 'bibekbista0405';
+  /* repos already shown elsewhere with hand-written case studies, or
+     excluded for other reasons — never auto-listed here */
+  var EXCLUDE = ['dash-browser', 'ink', 'kribekhub-', 'kribekhub'];
+  var CACHE_KEY = 'gh-repos-cache-v1';
+  var CACHE_MS = 60 * 60 * 1000; /* 1 hour */
+  var MAX_CARDS = 6;
+
+  var LANG_EMOJI = {
+    JavaScript: '📜', TypeScript: '🔷', Python: '🐍', HTML: '📄', CSS: '🎨',
+    Java: '☕', 'C++': '⚙️', C: '⚙️', 'C#': '🎯', PHP: '🐘', Go: '🐹',
+    Rust: '🦀', Swift: '🦅', Kotlin: '📱', Shell: '🖥', Vue: '🟢'
+  };
+
+  function timeAgo(iso){
+    var diff = Date.now() - new Date(iso).getTime();
+    var days = Math.floor(diff / 86400000);
+    if(days < 1) return 'updated today';
+    if(days === 1) return 'updated yesterday';
+    if(days < 30) return 'updated ' + days + ' days ago';
+    var months = Math.floor(days / 30);
+    if(months < 12) return 'updated ' + months + ' month' + (months > 1 ? 's' : '') + ' ago';
+    return 'updated ' + Math.floor(months / 12) + 'y ago';
+  }
+
+  function buildCard(repo){
+    var name = repo.name;
+    var desc = (repo.description && repo.description.trim())
+      ? repo.description.trim()
+      : 'No description yet on GitHub — the code speaks for itself.';
+    var emoji = LANG_EMOJI[repo.language] || '📦';
+    var card = document.createElement('article');
+    card.className = 'gh-card reveal in gh-card-new';
+    card.setAttribute('data-tilt', '6');
+    card.setAttribute('data-repo', name.toLowerCase());
+    var liveLink = (repo.homepage && /^https?:\/\//.test(repo.homepage))
+      ? '<a href="' + repo.homepage + '" target="_blank" rel="noopener noreferrer">Live ↗</a>' : '';
+    var langTag = repo.language ? '<span class="tag">' + repo.language + '</span>' : '';
+    card.innerHTML =
+      '<div class="gh-visual" data-fallback="' + emoji + '">' +
+        '<img src="https://opengraph.githubassets.com/1/' + USERNAME + '/' + encodeURIComponent(name) + '" alt="' + name + ' repository preview from GitHub" loading="lazy" onerror="this.closest(\'.gh-visual\').classList.add(\'gh-visual-fallback\'); this.remove();">' +
+      '</div>' +
+      '<h3>' + name + '</h3>' +
+      '<p class="gh-desc">' + desc + '</p>' +
+      (langTag ? '<div class="gh-tags">' + langTag + '</div>' : '') +
+      '<p class="gh-updated">' + timeAgo(repo.pushed_at) + '</p>' +
+      '<div class="gh-links"><a href="' + repo.html_url + '" target="_blank" rel="noopener noreferrer">GitHub ↗</a>' + liveLink + '</div>';
+    return card;
+  }
+
+  function render(repos){
+    var existingNames = Array.prototype.slice.call(grid.querySelectorAll('[data-repo]'))
+      .map(function(el){ return el.getAttribute('data-repo'); });
+
+    var fresh = repos.filter(function(r){
+      var n = r.name.toLowerCase();
+      return !r.fork && EXCLUDE.indexOf(n) === -1 && existingNames.indexOf(n) === -1;
+    }).slice(0, MAX_CARDS - existingNames.length);
+
+    fresh.forEach(function(repo){ grid.appendChild(buildCard(repo)); });
+
+    /* newly-added cards need the same tilt interactivity the static ones
+       already have — that setup runs once at load, before this async
+       fetch resolves, so it's re-invoked here for just the new cards */
+    if(fresh.length && window.initTiltCards) window.initTiltCards(grid);
+
+    if(eyebrow && !eyebrow.querySelector('.gh-live-dot')){
+      eyebrow.innerHTML = '<span class="gh-live-dot" aria-hidden="true"></span>More from GitHub — live';
+    }
+  }
+
+  function fromCache(){
+    try {
+      var raw = sessionStorage.getItem(CACHE_KEY);
+      if(!raw) return null;
+      var parsed = JSON.parse(raw);
+      if(Date.now() - parsed.t > CACHE_MS) return null;
+      return parsed.data;
+    } catch(e){ return null; }
+  }
+  function toCache(data){
+    try { sessionStorage.setItem(CACHE_KEY, JSON.stringify({ t: Date.now(), data: data })); } catch(e){}
+  }
+
+  var cached = fromCache();
+  if(cached){
+    render(cached);
+    return;
+  }
+
+  fetch('https://api.github.com/users/' + USERNAME + '/repos?sort=pushed&per_page=100')
+    .then(function(res){ if(!res.ok) throw new Error('GitHub API ' + res.status); return res.json(); })
+    .then(function(repos){
+      if(!Array.isArray(repos)) return;
+      toCache(repos);
+      render(repos);
+    })
+    .catch(function(){
+      /* API unreachable or rate-limited — the hand-written cards already
+         in the page stay exactly as they are. Nothing to fix, nothing shown. */
+    });
 })();
 
 /* ===================== PROJECT FILTER ===================== */

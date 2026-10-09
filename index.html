@@ -8,9 +8,14 @@
 <meta property="og:title" content="Bibek Bista — Student Developer">
 <meta property="og:description" content="Full-stack development, cybersecurity, AI and creative technology, built by a student from Nepalgunj, Nepal.">
 <meta property="og:type" content="website">
-<meta name="twitter:card" content="summary">
+<!-- TODO: replace with your real deployed domain once known, e.g. https://bibekbista.com/og-image.jpg -->
+<meta property="og:image" content="/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Bibek Bista — Student Developer">
 <meta name="twitter:description" content="Full-stack development, cybersecurity, AI and creative technology, built by a student from Nepalgunj, Nepal.">
+<meta name="twitter:image" content="/og-image.jpg">
 <meta name="theme-color" content="#FBF6EC">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1854,10 +1859,50 @@ footer .totop:hover .totop-arrow{transform:translateY(-4px);}
   .rv-btn:active, .room-btn:active{transform:scale(0.97);}
   .choice-card:active{transform:scale(0.98);}
 }
+/* ===== signature first-load intro ===== */
+.intro-overlay{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(circle at 50% 40%,#FFF8EA,var(--cream) 70%);color:var(--coral);
+  transition:opacity .4s ease,visibility 0s linear .4s;}
+.intro-overlay.intro-out{opacity:0;visibility:hidden;pointer-events:none;}
+.intro-mark{text-align:center;}
+.intro-logo{display:inline-block;font-family:'Fredoka',system-ui,sans-serif;font-weight:600;font-size:52px;color:var(--ink);animation:introLogoIn .55s cubic-bezier(.2,.9,.3,1.2) both;}
+.intro-logo span{color:var(--coral);}
+.intro-swash{display:block;width:120px;height:20px;margin:6px auto 0;color:var(--gold);}
+.intro-swash path{stroke-dasharray:160;stroke-dashoffset:160;animation:introSwashDraw .6s .25s ease-out forwards;}
+@keyframes introLogoIn{from{opacity:0;transform:translateY(14px) scale(.92);}to{opacity:1;transform:none;}}
+@keyframes introSwashDraw{to{stroke-dashoffset:0;}}
+
+/* ===== pinned horizontal project gallery (desktop) ===== */
+.shelf-scroller.gal-pinned{overflow-x:hidden;scroll-snap-type:none;}
+
+/* ===== Hiring Room cursor spotlight ===== */
+.room-spot{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0;transition:opacity .4s ease;
+  background:radial-gradient(380px circle at var(--mx,50%) var(--my,30%),rgba(255,180,67,.13),transparent 65%);}
+#hiringRoom.spot-on .room-spot{opacity:1;}
+
+/* ===== scroll-linked hue bleed ===== */
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.5;
+  background:radial-gradient(900px circle at 85% 10%,var(--bleed,rgba(255,107,74,.10)),transparent 60%);
+  transition:background .8s ease;}
+
+@media (prefers-reduced-motion:reduce){
+  .intro-overlay{display:none;}
+  body::before{transition:none;}
+}
 </style>
-<noscript><style>.reveal{opacity:1 !important;transform:none !important;}</style></noscript>
+<noscript><style>.reveal{opacity:1 !important;transform:none !important;}
+</style></noscript>
 </head>
 <body>
+<div class="intro-overlay" id="introOverlay" aria-hidden="true">
+  <div class="intro-mark"><span class="intro-logo">Bibek<span>.</span></span>
+  <svg class="intro-swash" viewBox="0 0 120 20" aria-hidden="true"><path d="M4 12c18-9 36-11 56-6s40 9 56 2" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></div>
+</div>
+<script>(function(){var el=document.getElementById('introOverlay');if(!el)return;
+var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+var seen=false;try{seen=sessionStorage.getItem('bb-intro-played');}catch(e){}
+if(reduce||seen){el.style.display='none';}
+else{try{sessionStorage.setItem('bb-intro-played','1');}catch(e){}window.__introActive=true;}})();</script>
 
 <a href="#main" class="skip-link">Skip to content</a>
 <div class="cursor-dot" id="cursorDot" aria-hidden="true"></div>
@@ -1904,7 +1949,7 @@ footer .totop:hover .totop-arrow{transform:translateY(-4px);}
         <div class="rp-tag-row">
           <span class="rp-tag">DASH — privacy-first desktop browser</span>
           <span class="rp-tag">INK — social platform, live</span>
-          <span class="rp-tag">LinkUp — real-time chat, prototype</span>
+          <span class="rp-tag">LinkUp — chat & video calling, active</span>
         </div>
       </div>
 
@@ -2201,14 +2246,16 @@ footer .totop:hover .totop-arrow{transform:translateY(-4px);}
         </div>
       </article>
 
-      <article class="proj-card" data-cursor-label="Open" data-tilt="6" data-status="prototype">
-        <div class="proj-visual" style="background:#EAF3DE;">💬</div>
-        <span class="proj-status status-prototype">Prototype</span>
+      <article class="proj-card" data-cursor-label="Open" data-tilt="6" data-status="active">
+        <div class="proj-visual proj-visual-gh" style="background:#EAF3DE;" data-fallback="💬">
+          <img src="https://opengraph.githubassets.com/1/bibekbista0405/Linkup" alt="LinkUp repository preview from GitHub" loading="lazy" onerror="this.closest('.proj-visual').classList.add('proj-visual-fallback'); this.remove();">
+        </div>
+        <span class="proj-status status-active">Active build</span>
         <h3>LinkUp</h3>
-        <p class="proj-desc">What if a website felt like your phone? Friend requests, chat, notifications, and calling — conceptual features labeled clearly where still prototype-level.</p>
-        <div class="proj-tags"><span class="tag">Realtime</span><span class="tag">Auth</span><span class="tag">Chat</span></div>
+        <p class="proj-desc">A fully working WhatsApp-style messaging and calling app — real-time chat, friend requests, blocking, and WebRTC voice/video calls, running on a local SQLite database.</p>
+        <div class="proj-tags"><span class="tag">Next.js</span><span class="tag">TypeScript</span><span class="tag">Socket.IO</span><span class="tag">WebRTC</span></div>
         <div class="proj-links">
-          <a href="#contact">Ask me about it →</a>
+          <a href="https://github.com/bibekbista0405/Linkup" target="_blank" rel="noopener">GitHub ↗</a>
           <button type="button" class="proj-story-btn" data-case-study="linkup" data-cursor-label="Open">Explore the story →</button>
         </div>
       </article>
@@ -2643,6 +2690,7 @@ footer .totop:hover .totop-arrow{transform:translateY(-4px);}
 <div class="room-plane" id="roomPlane" aria-hidden="true">✈️</div>
 
 <div id="hiringRoom" role="dialog" aria-modal="true" aria-labelledby="hiringRoomTitle" aria-hidden="true">
+  <div class="room-spot" id="roomSpot" aria-hidden="true"></div>
   <div class="room-bg-glow" aria-hidden="true"><span class="g1"></span><span class="g2"></span><span class="g3"></span></div>
 
   <div class="room-topbar">
@@ -2989,7 +3037,7 @@ footer .totop:hover .totop-arrow{transform:translateY(-4px);}
         <span class="ts-icon" aria-hidden="true">🧩</span>
         <p class="ts-eyebrow">Best projects</p>
         <h3>DASH · INK · LinkUp</h3>
-        <p>DASH — a privacy-first desktop browser, in active development. INK — a live social platform with real auth. LinkUp — a real-time chat prototype.</p>
+        <p>DASH — a privacy-first desktop browser, in active development. INK — a live social platform with real auth. LinkUp — a working chat and video-calling app.</p>
       </div>
       <div class="ts-slide" data-slide="3">
         <span class="ts-icon" aria-hidden="true">🧭</span>
@@ -3135,19 +3183,20 @@ footer .totop:hover .totop-arrow{transform:translateY(-4px);}
           <span class="cs-step-no">01</span>
           <div>
             <h4>The idea</h4>
-            <p>Friend requests, chat, notifications, calling — the kind of real-time, social features you expect from a phone app, explored as a web build.</p>
+            <p>Friend requests, real-time chat, blocking, and voice/video calling — the kind of messaging-app features you'd expect from your phone, built as a real web app instead.</p>
           </div>
         </div>
 
         <div class="cs-step">
           <span class="cs-step-no">02</span>
           <div>
-            <h4>The pieces</h4>
-            <p>Centered on real-time communication, authentication, and chat.</p>
+            <h4>The stack</h4>
+            <p>A Next.js + TypeScript frontend, Socket.IO for real-time chat, WebRTC for voice and video calls, and a local SQLite database — no external backend required to run it.</p>
             <div class="pd-flow" style="margin-top:12px;">
-              <span class="tag">Realtime</span><span class="pd-connector"></span>
-              <span class="tag">Auth</span><span class="pd-connector"></span>
-              <span class="tag">Chat</span>
+              <span class="tag">Next.js</span><span class="pd-connector"></span>
+              <span class="tag">Socket.IO</span><span class="pd-connector"></span>
+              <span class="tag">WebRTC</span><span class="pd-connector"></span>
+              <span class="tag">SQLite</span>
             </div>
           </div>
         </div>
@@ -3155,8 +3204,8 @@ footer .totop:hover .totop-arrow{transform:translateY(-4px);}
         <div class="cs-step">
           <span class="cs-step-no">03</span>
           <div>
-            <h4>Being honest about where it's at</h4>
-            <p>This one's still prototype-level. Some pieces exist as working code, others are deliberately labeled as concept rather than a shipped feature — I'd rather be upfront about that than oversell it.</p>
+            <h4>Building it</h4>
+            <p>Getting real-time messaging and peer-to-peer calling working together meant juggling two different kinds of "live" at once — Socket.IO keeping chat in sync, WebRTC handling the actual call — while keeping everything running off a local database instead of a hosted backend.</p>
           </div>
         </div>
 
@@ -3164,9 +3213,9 @@ footer .totop:hover .totop-arrow{transform:translateY(-4px);}
           <span class="cs-step-no">04</span>
           <div>
             <h4>Where it stands</h4>
-            <p><span class="proj-status status-prototype" style="margin:0 0 8px;display:inline-block;">Prototype</span><br>No public link yet for this one — happy to walk you through it directly.</p>
+            <p><span class="proj-status status-active" style="margin:0 0 8px;display:inline-block;">Active build</span><br>It's real, working code — chat, friend requests, blocking, and calling all function. The source is public.</p>
             <div class="cs-btn-row" style="margin-top:12px;">
-              <a class="cs-btn primary" href="#contact" id="csLinkupContact">Ask me about it →</a>
+              <a class="cs-btn primary" href="https://github.com/bibekbista0405/Linkup" target="_blank" rel="noopener">View code ↗</a>
             </div>
           </div>
         </div>
@@ -3429,7 +3478,7 @@ footer .totop:hover .totop-arrow{transform:translateY(-4px);}
       'Bibek Bista — Student Developer · Full-Stack · Cybersecurity Learner',
       '',
       'Who: A student developer from Nepal, building real-world applications while developing skills in software engineering, cybersecurity, and AI.',
-      'What he builds: DASH (privacy-first desktop browser), INK (social platform, live), LinkUp (real-time chat, prototype)',
+      'What he builds: DASH (privacy-first desktop browser), INK (social platform, live), LinkUp (chat & video calling, active)',
       'Core skills — building with: React, Node.js, TypeScript, Firebase, Electron',
       'Core skills — exploring: Linux, Networking, Web security, Auth & CORS',
       'Direction: Cybersecurity + Software Engineering',
@@ -3618,7 +3667,7 @@ footer .totop:hover .totop-arrow{transform:translateY(-4px);}
     if(photoWrap){ gsap.set(photoWrap, {opacity: 0, y: 24, scale: 0.92, rotate: -8}); }
     gsap.set(heroCopyEls, {opacity: 0, y: 16});
 
-    var heroTl = gsap.timeline({defaults: {ease: 'power3.out'}, delay: 0.15});
+    var heroTl = gsap.timeline({defaults: {ease: 'power3.out'}, delay: window.__introActive ? 0.85 : 0.15});
     heroTl.add(drawLine(heroLinePath, {duration: 0.9}), 0);
     if(heroLineArrow){ heroTl.to(heroLineArrow, {opacity: 0.45, duration: 0.25}, 0.75); }
     if(photoWrap){ heroTl.to(photoWrap, {opacity: 1, y: 0, scale: 1, rotate: -4, duration: 0.7, ease: 'back.out(1.6)'}, 0.55); }
@@ -3738,6 +3787,74 @@ footer .totop:hover .totop-arrow{transform:translateY(-4px);}
   } else {
     document.querySelectorAll('.reveal').forEach(function(el){ el.classList.add('in'); });
   }
+})();
+
+/* ===================== INTRO CLEANUP ===================== */
+(function(){var el=document.getElementById('introOverlay');
+  if(!el||el.style.display==='none')return;
+  window.setTimeout(function(){el.classList.add('intro-out');
+    window.setTimeout(function(){if(el.parentNode)el.parentNode.removeChild(el);},420);},750);})();
+
+/* ===================== PINNED HORIZONTAL GALLERY (desktop, motion-ok) ===================== */
+(function(){
+  if(!window.gsap||!window.ScrollTrigger)return;
+  var mq=window.matchMedia('(min-width:1024px) and (hover:hover) and (prefers-reduced-motion: no-preference)');
+  var sc=document.querySelector('#work .shelf-scroller');
+  if(!sc||!mq.matches)return;
+  try{
+    gsap.registerPlugin(ScrollTrigger);
+    sc.classList.add('gal-pinned');
+    var max=function(){return Math.max(0,sc.scrollWidth-sc.clientWidth);};
+    ScrollTrigger.create({
+      trigger:sc,start:'center center',end:function(){return '+='+max();},
+      pin:true,anticipatePin:1,invalidateOnRefresh:true,
+      onUpdate:function(self){sc.scrollLeft=self.progress*max();}
+    });
+    var fb=document.getElementById('projFilter');
+    if(fb)fb.addEventListener('click',function(){setTimeout(function(){sc.scrollLeft=0;ScrollTrigger.refresh();},60);});
+    window.addEventListener('load',function(){ScrollTrigger.refresh();});
+  }catch(e){sc.classList.remove('gal-pinned');}
+})();
+
+/* ===================== HIRING ROOM SPOTLIGHT ===================== */
+(function(){
+  var room=document.getElementById('hiringRoom');
+  if(!room||!window.matchMedia('(hover:hover) and (pointer:fine) and (prefers-reduced-motion: no-preference)').matches)return;
+  var raf=0,x=0,y=0;
+  room.addEventListener('mousemove',function(e){
+    x=e.clientX;y=e.clientY;room.classList.add('spot-on');
+    if(!raf)raf=requestAnimationFrame(function(){raf=0;room.style.setProperty('--mx',x+'px');room.style.setProperty('--my',y+'px');});
+  },{passive:true});
+  room.addEventListener('mouseleave',function(){room.classList.remove('spot-on');});
+})();
+
+/* ===================== MOBILE TILT (gyroscope) on the desk scene ===================== */
+(function(){
+  if(!window.gsap||!window.DeviceOrientationEvent)return;
+  if(!window.matchMedia('(hover:none) and (pointer:coarse) and (prefers-reduced-motion: no-preference)').matches)return;
+  var scene=document.getElementById('deskScene');var svg=scene&&scene.querySelector('svg');
+  if(!svg)return;
+  var rx=gsap.quickTo(svg,'rotationX',{duration:.6,ease:'power2.out'});
+  var ry=gsap.quickTo(svg,'rotationY',{duration:.6,ease:'power2.out'});
+  var on=false;
+  function clamp(v,m){return Math.max(-m,Math.min(m,v));}
+  function handler(e){if(e.beta==null)return;rx(clamp((e.beta-45)/6,7));ry(clamp(e.gamma/6,7));}
+  function start(){if(on)return;on=true;window.addEventListener('deviceorientation',handler,true);}
+  if(typeof DeviceOrientationEvent.requestPermission==='function'){
+    // iOS: permission must be requested from a user gesture
+    var ask=function(){document.removeEventListener('touchend',ask);
+      DeviceOrientationEvent.requestPermission().then(function(r){if(r==='granted')start();}).catch(function(){});};
+    document.addEventListener('touchend',ask,{once:true,passive:true});
+  }else start();
+})();
+
+/* ===================== SCROLL-LINKED HUE BLEED ===================== */
+(function(){
+  if(!('IntersectionObserver' in window))return;
+  var map={about:'rgba(95,168,211,.12)',work:'rgba(255,107,74,.11)','ai-section':'rgba(255,180,67,.13)',security:'rgba(46,110,150,.12)','more-github':'rgba(255,107,74,.10)',skills:'rgba(255,180,67,.12)',journey:'rgba(95,168,211,.12)',playground:'rgba(255,107,74,.11)','online-universe':'rgba(95,168,211,.13)',contact:'rgba(255,180,67,.13)'};
+  var io=new IntersectionObserver(function(es){es.forEach(function(en){
+    if(en.isIntersecting&&map[en.target.id])document.body.style.setProperty('--bleed',map[en.target.id]);});},{rootMargin:'-45% 0px -45% 0px'});
+  Object.keys(map).forEach(function(id){var n=document.getElementById(id);if(n)io.observe(n);});
 })();
 
 /* ===================== LIVE GITHUB FEED — "More from GitHub" auto-updates ===================== */
